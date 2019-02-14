@@ -1,5 +1,7 @@
 package org.jcy.timeline.swt.ui.util;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Control;
 
@@ -9,167 +11,181 @@ public class FormDatas {
 	private final FormData formData;
 
 	/**
+	 * Attach the {@param control} to a new FormDatas instance.
 	 *
-	 * @param control
+	 * @param control control
 	 */
 	public static FormDatas attach(Control control) {
-		// TODO - implement FormDatas.attach
-		throw new UnsupportedOperationException();
-	}
-
-	public FormDatas toLeft() {
-		// TODO - implement FormDatas.toLeft
-		throw new UnsupportedOperationException();
+		return new FormDatas(control);
 	}
 
 	/**
+	 * Move to the left.
+	 */
+	public FormDatas toLeft() {
+		return toLeft(0);
+	}
+
+	/**
+	 * Move to the left with {@param margin}.
 	 *
-	 * @param margin
+	 * @param margin margin
 	 */
 	public FormDatas toLeft(int margin) {
-		// TODO - implement FormDatas.toLeft
-		throw new UnsupportedOperationException();
+		formData.left = new FormAttachment(0, margin);
+		return this;
 	}
 
 	/**
+	 * Move to the left of {@param control}.
 	 *
-	 * @param control
+	 * @param control the control the side is attached to
 	 */
 	public FormDatas atLeftTo(Control control) {
-		// TODO - implement FormDatas.atLeftTo
-		throw new UnsupportedOperationException();
+		return atLeftTo(control, 0);
 	}
 
 	/**
+	 * Move to the left of {@param control}.
 	 *
-	 * @param control
-	 * @param margin
+	 * @param control the control the side is attached to
+	 * @param margin the offset of the side from the control
 	 */
 	public FormDatas atLeftTo(Control control, int margin) {
-		// TODO - implement FormDatas.atLeftTo
-		throw new UnsupportedOperationException();
+		return atLeftTo(control, margin, SWT.DEFAULT);
 	}
 
 	/**
+	 * Move to the left of {@param control}.
 	 *
-	 * @param control
-	 * @param margin
-	 * @param alignment
+	 * @param control the control the side is attached to
+	 * @param margin the offset of the side from the control
+	 * @param alignment the alignment of the side to the control it is attached to
 	 */
 	public FormDatas atLeftTo(Control control, int margin, int alignment) {
-		// TODO - implement FormDatas.atLeftTo
-		throw new UnsupportedOperationException();
+		formData.left = new FormAttachment(control, margin, alignment);
+		return this;
 	}
 
 	/**
+	 * Move from left.
 	 *
-	 * @param numerator
+	 * @param numerator the percentage of the position
 	 */
 	public FormDatas fromLeft(int numerator) {
-		// TODO - implement FormDatas.fromLeft
-		throw new UnsupportedOperationException();
+		return fromLeft(numerator, 0);
 	}
 
 	/**
+	 * Move from left.
 	 *
-	 * @param numerator
-	 * @param margin
+	 * @param numerator the percentage of the position
+	 * @param margin the offset of the side from the position
 	 */
 	public FormDatas fromLeft(int numerator, int margin) {
-		// TODO - implement FormDatas.fromLeft
-		throw new UnsupportedOperationException();
-	}
-
-	public FormDatas toRight() {
-		// TODO - implement FormDatas.toRight
-		throw new UnsupportedOperationException();
+		formData.left = new FormAttachment(numerator, margin);
+		return this;
 	}
 
 	/**
+	 * Move to the right.
+	 */
+	public FormDatas toRight() {
+		return toRight(0);
+	}
+
+	/**
+	 * Move to the right with {@param margin}.
 	 *
-	 * @param margin
+	 * @param margin margin
 	 */
 	public FormDatas toRight(int margin) {
-		// TODO - implement FormDatas.toRight
-		throw new UnsupportedOperationException();
+		formData.right = new FormAttachment(DENOMINATOR, -margin);
+		return this;
 	}
 
 	/**
+	 * Move to the left of {@param control}.
 	 *
-	 * @param control
+	 * @param control the control the side is attached to
 	 */
 	public FormDatas atRightTo(Control control) {
-		// TODO - implement FormDatas.atRightTo
-		throw new UnsupportedOperationException();
+		return atRightTo(control, 0);
 	}
 
 	/**
+	 * Move to the right of {@param control}.
 	 *
-	 * @param control
-	 * @param margin
+	 * @param control the control the side is attached to
+	 * @param margin the offset of the side from the control
 	 */
 	public FormDatas atRightTo(Control control, int margin) {
-		// TODO - implement FormDatas.atRightTo
-		throw new UnsupportedOperationException();
+		return atRightTo(control, margin, SWT.DEFAULT);
 	}
 
 	/**
+	 * Move to the right of {@param control}.
 	 *
-	 * @param control
-	 * @param margin
-	 * @param alignment
+	 * @param control the control the side is attached to
+	 * @param margin the offset of the side from the control
+	 * @param alignment the alignment of the side to the control it is attached to
 	 */
 	public FormDatas atRightTo(Control control, int margin, int alignment) {
-		// TODO - implement FormDatas.atRightTo
-		throw new UnsupportedOperationException();
+		formData.right = new FormAttachment(control, -margin, alignment);
+		return this;
 	}
 
 	/**
+	 * Move from right.
 	 *
-	 * @param numerator
+	 * @param numerator the percentage of the position
 	 */
 	public FormDatas fromRight(int numerator) {
-		// TODO - implement FormDatas.fromRight
-		throw new UnsupportedOperationException();
+		return fromRight(numerator, 0);
 	}
 
 	/**
+	 * Move from right.
 	 *
-	 * @param numerator
-	 * @param margin
+	 * @param numerator the percentage of the position
+	 * @param margin the offset of the side from the position
 	 */
 	public FormDatas fromRight(int numerator, int margin) {
-		// TODO - implement FormDatas.fromRight
-		throw new UnsupportedOperationException();
-	}
-
-	public FormDatas toTop() {
-		// TODO - implement FormDatas.toTop
-		throw new UnsupportedOperationException();
+		formData.right = new FormAttachment(DENOMINATOR - numerator, -margin);
+		return this;
 	}
 
 	/**
+	 * Move to the top.
+	 */
+	public FormDatas toTop() {
+		return toTop(0);
+	}
+
+	/**
+	 * Move to the top with {@param margin}.
 	 *
-	 * @param margin
+	 * @param margin margin
 	 */
 	public FormDatas toTop(int margin) {
-		// TODO - implement FormDatas.toTop
-		throw new UnsupportedOperationException();
+		formData.top = new FormAttachment(0, margin);
+		return this;
 	}
 
 	/**
+	 * Move to the top of {@param control}.
 	 *
-	 * @param control
+	 * @param control the control the side is attached to
 	 */
 	public FormDatas atTopTo(Control control) {
-		// TODO - implement FormDatas.atTopTo
-		throw new UnsupportedOperationException();
+		return atTopTo(control, 0);
 	}
 
 	/**
+	 * Move to the top of {@param control}.
 	 *
-	 * @param control
-	 * @param margin
+	 * @param control the control the side is attached to
+	 * @param margin the offset of the side from the control
 	 */
 	public FormDatas atTopTo(Control control, int margin) {
 		// TODO - implement FormDatas.atTopTo
@@ -177,10 +193,11 @@ public class FormDatas {
 	}
 
 	/**
+	 * Move to the top of {@param control}.
 	 *
-	 * @param control
-	 * @param margin
-	 * @param alignment
+	 * @param control the control the side is attached to
+	 * @param margin the offset of the side from the control
+	 * @param alignment the alignment of the side to the control it is attached to
 	 */
 	public FormDatas atTopTo(Control control, int margin, int alignment) {
 		// TODO - implement FormDatas.atTopTo
@@ -188,116 +205,121 @@ public class FormDatas {
 	}
 
 	/**
+	 * Move from top.
 	 *
-	 * @param numerator
+	 * @param numerator the percentage of the position
 	 */
 	public FormDatas fromTop(int numerator) {
-		// TODO - implement FormDatas.fromTop
-		throw new UnsupportedOperationException();
+		return fromTop(numerator, 0);
 	}
 
 	/**
+	 * Move from top.
 	 *
-	 * @param numerator
-	 * @param margin
+	 * @param numerator the percentage of the position
+	 * @param margin the offset of the side from the position
 	 */
 	public FormDatas fromTop(int numerator, int margin) {
-		// TODO - implement FormDatas.fromTop
-		throw new UnsupportedOperationException();
-	}
-
-	public FormDatas toBottom() {
-		// TODO - implement FormDatas.toBottom
-		throw new UnsupportedOperationException();
+		formData.top = new FormAttachment(numerator, margin);
+		return this;
 	}
 
 	/**
+	 * Move to bottom.
+	 */
+	public FormDatas toBottom() {
+		return toBottom(0);
+	}
+
+	/**
+	 * Move to the bottom with {@param margin}.
 	 *
-	 * @param margin
+	 * @param margin margin
 	 */
 	public FormDatas toBottom(int margin) {
-		// TODO - implement FormDatas.toBottom
-		throw new UnsupportedOperationException();
+		formData.bottom = new FormAttachment(DENOMINATOR, -margin);
+		return this;
 	}
 
 	/**
+	 * Move to the bottom of {@param control}.
 	 *
-	 * @param control
+	 * @param control the control the side is attached to
 	 */
 	public FormDatas atBottomTo(Control control) {
-		// TODO - implement FormDatas.atBottomTo
-		throw new UnsupportedOperationException();
+		return atBottomTo(control, 0);
 	}
 
 	/**
+	 * Move to the bottom of {@param control}.
 	 *
-	 * @param control
-	 * @param margin
+	 * @param control the control the side is attached to
+	 * @param margin the offset of the side from the control
 	 */
 	public FormDatas atBottomTo(Control control, int margin) {
-		// TODO - implement FormDatas.atBottomTo
-		throw new UnsupportedOperationException();
+		return atBottomTo(control, margin, SWT.DEFAULT);
 	}
 
 	/**
+	 * Move to the bottom of {@param control}.
 	 *
-	 * @param control
-	 * @param margin
-	 * @param alignment
+	 * @param control the control the side is attached to
+	 * @param margin the offset of the side from the control
+	 * @param alignment the alignment of the side to the control it is attached to
+
 	 */
 	public FormDatas atBottomTo(Control control, int margin, int alignment) {
-		// TODO - implement FormDatas.atBottomTo
-		throw new UnsupportedOperationException();
+		formData.bottom = new FormAttachment(control, -margin, alignment);
+		return this;
 	}
 
 	/**
+	 * Move from bottom.
 	 *
-	 * @param numerator
+	 * @param numerator the percentage of the position
 	 */
 	public FormDatas fromBottom(int numerator) {
-		// TODO - implement FormDatas.fromBottom
-		throw new UnsupportedOperationException();
+		return fromBottom(numerator, 0);
 	}
 
 	/**
+	 * Move from bottom.
 	 *
-	 * @param numerator
-	 * @param margin
+	 * @param numerator the percentage of the position
+	 * @param margin the offset of the side from the position
 	 */
 	public FormDatas fromBottom(int numerator, int margin) {
-		// TODO - implement FormDatas.fromBottom
-		throw new UnsupportedOperationException();
+		formData.bottom = new FormAttachment(DENOMINATOR - numerator, -margin);
+		return this;
 	}
 
 	/**
+	 * Set the width.
 	 *
-	 * @param width
+	 * @param width width
 	 */
 	public FormDatas withWidth(int width) {
-		// TODO - implement FormDatas.withWidth
-		throw new UnsupportedOperationException();
+		formData.width = width;
+		return this;
 	}
 
 	/**
+	 * Set the height.
 	 *
-	 * @param height
+	 * @param height height
 	 */
 	public FormDatas withHeight(int height) {
-		// TODO - implement FormDatas.withHeight
-		throw new UnsupportedOperationException();
+		formData.height = height;
+		return this;
 	}
 
-	private FormData getFormData() {
+	public FormData getFormData() {
 		return this.formData;
 	}
 
-	/**
-	 *
-	 * @param control
-	 */
 	private FormDatas(Control control) {
-		// TODO - implement FormDatas.FormDatas
-		throw new UnsupportedOperationException();
+		formData = new FormData();
+		control.setLayoutData(formData);
 	}
 
 }

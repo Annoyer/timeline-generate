@@ -1,5 +1,7 @@
 package org.jcy.timeline.swt.ui;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FormLayout;
 import org.jcy.timeline.core.model.Item;
 import org.jcy.timeline.core.ui.ItemViewer;
 import org.eclipse.swt.widgets.Composite;
@@ -8,6 +10,7 @@ import org.jcy.timeline.core.model.ItemProvider;
 import org.jcy.timeline.core.ui.ItemUiFactory;
 import org.jcy.timeline.core.model.SessionStorage;
 import org.eclipse.swt.widgets.Control;
+import org.jcy.timeline.swt.ui.util.FormDatas;
 
 public class SwtTimeline<I extends Item> {
 
@@ -24,8 +27,7 @@ public class SwtTimeline<I extends Item> {
 	 * @param sessionStorage
 	 */
 	public SwtTimeline(Composite parent, ItemProvider<I> itemProvider, ItemUiFactory<I, Composite> itemUiFactory, SessionStorage<I> sessionStorage) {
-		// TODO - implement SwtTimeline.SwtTimeline
-		throw new UnsupportedOperationException();
+		this(parent, new SwtTimelineCompound<>(itemProvider, itemUiFactory, sessionStorage));
 	}
 
 	/**
@@ -34,23 +36,22 @@ public class SwtTimeline<I extends Item> {
 	 * @param compound
 	 */
 	SwtTimeline(Composite parent, SwtTimelineCompound<I> compound) {
-		// TODO - implement SwtTimeline.SwtTimeline
-		throw new UnsupportedOperationException();
+		itemViewer = compound.getItemViewer();
+		header = compound.getHeader();
+		autoUpdate = compound.getAutoUpdate();
+		control = initialize(parent);
 	}
 
 	public Control getControl() {
-		// TODO - implement SwtTimeline.getControl
-		throw new UnsupportedOperationException();
+		return control;
 	}
 
 	public void startAutoRefresh() {
-		// TODO - implement SwtTimeline.startAutoRefresh
-		throw new UnsupportedOperationException();
+		autoUpdate.start();
 	}
 
 	public void stopAutoRefresh() {
-		// TODO - implement SwtTimeline.stopAutoRefresh
-		throw new UnsupportedOperationException();
+		autoUpdate.stop();
 	}
 
 	/**
@@ -58,8 +59,7 @@ public class SwtTimeline<I extends Item> {
 	 * @param title
 	 */
 	public void setTitle(String title) {
-		// TODO - implement SwtTimeline.setTitle
-		throw new UnsupportedOperationException();
+		header.setTitle(title);
 	}
 
 	/**
@@ -67,8 +67,13 @@ public class SwtTimeline<I extends Item> {
 	 * @param parent
 	 */
 	private Composite initialize(Composite parent) {
-		// TODO - implement SwtTimeline.initialize
-		throw new UnsupportedOperationException();
+		Composite result = new Composite(parent, SWT.NONE);
+		header.createUi(result);
+		itemViewer.createUi(result);
+		layout(result);
+		itemViewer.initialize();
+		header.onFetchNew(event -> itemViewer.fetchNew());
+		return result;
 	}
 
 	/**
@@ -76,8 +81,9 @@ public class SwtTimeline<I extends Item> {
 	 * @param control
 	 */
 	private void layout(Composite control) {
-		// TODO - implement SwtTimeline.layout
-		throw new UnsupportedOperationException();
+		control.setLayout(new FormLayout());
+		FormDatas.attach(header.getControl()).toLeft().toTop().toRight();
+		FormDatas.attach(itemViewer.getUiRoot()).toLeft().atTopTo(header.getControl()).toRight().toBottom();
 	}
 
 }

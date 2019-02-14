@@ -1,37 +1,34 @@
 package org.jcy.timeline.util;
 
-public class Assertion {
+public final class Assertion {
 
 	/**
+	 * Check the condition.
 	 *
-	 * @param condition
-	 * @param messagePattern
-	 * @param arguments
+	 * @param condition condition
+	 * @param messagePatternName messagePatternName
+	 * @param arguments arguments
 	 */
-	public static void checkArgument(boolean condition, String messagePattern, Object[] arguments) {
-		// TODO - implement Iterables.Iterables
-		throw new UnsupportedOperationException();
+	public static void check(boolean condition, String messagePatternName, Object... arguments) {
+		if (!condition) {
+			throw new IllegalArgumentException(formatErrorMessage(messagePatternName, arguments));
+		}
 	}
 
 	/**
+	 * Format the error message.
 	 *
-	 * @param condition
-	 * @param messagePattern
-	 * @param arguments
+	 * @param messagePatternName messagePatternName
+	 * @param arguments arguments
 	 */
-	public static void checkState(boolean condition, String messagePattern, Object[] arguments) {
-		// TODO - implement Iterables.Iterables
-		throw new UnsupportedOperationException();
-	}
+	public static String formatErrorMessage(String messagePatternName, Object... arguments) {
+		String message = Messages.get(messagePatternName);
+		check(message != null, Messages.get("MESSAGE_PATTERN_MUST_NOT_BE_NULL"));
 
-	/**
-	 *
-	 * @param messagePattern
-	 * @param arguments
-	 */
-	public static String formatErrorMessage(String messagePattern, Object[] arguments) {
-		// TODO - implement Iterables.Iterables
-		throw new UnsupportedOperationException();
+		if (arguments != null) {
+			return String.format(message, arguments);
+		}
+		return message;
 	}
 
 }

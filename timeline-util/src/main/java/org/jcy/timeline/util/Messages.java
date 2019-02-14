@@ -26,4 +26,24 @@ public final class Messages {
 		throw new UnsupportedOperationException();
 	}
 
+	/**
+	 *
+	 * @param patternName
+	 * @param num
+	 */
+	public static String get(String patternName, long num) {
+		// TODO - implement Messages.get
+		throw new UnsupportedOperationException();
+	}
+
+	/**
+	 *
+	 * @param patternName
+	 * @param num
+	 */
+	public static String get(String patternName, int num) {
+		// TODO - implement Messages.get
+		throw new UnsupportedOperationException();
+	}
+
 }

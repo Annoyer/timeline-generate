@@ -1,14 +1,23 @@
 package org.jcy.timeline.swing.ui;
 
 import org.jcy.timeline.core.model.Item;
+import org.jcy.timeline.util.Assertion;
 import org.jcy.timeline.util.BackgroundProcessor;
 import org.jcy.timeline.core.model.Timeline;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
+import org.jcy.timeline.swing.ui.SwingTimelineCompound;
+
+/**
+ * Application Header.
+ *
+ * @param <I>
+ */
 class Header<I extends Item> {
 
 	static final String TITLE = "Timeline";
@@ -18,93 +27,102 @@ class Header<I extends Item> {
 	JButton fetchNew;
 	JLabel title;
 
-	public JPanel getComponent() {
+	/**
+	 * Create the header with a new background processor.
+	 *
+	 * @param timeline timeline.
+	 */
+	Header(Timeline<I> timeline) {
+		this(timeline, SwingTimelineCompound.createBackgroundProcessor());
+	}
+
+	Header(Timeline<I> timeline, BackgroundProcessor backgroundProcessor) {
+		this.backgroundProcessor = backgroundProcessor;
+		this.timeline = timeline;
+	}
+
+	/**
+	 * Create all UI components in the header.
+	 */
+	void createUi() {
+		createComponent();
+		createTitle();
+		createFetchNew();
+		layout();
+	}
+
+	/**
+	 * Update the 'new commit count' in header.
+	 */
+	void update() {
+		backgroundProcessor.process(() -> {
+			int count = timeline.getNewCount();
+			backgroundProcessor.dispatchToUiThread(() -> update(count));
+		});
+	}
+
+	/**
+	 * Bind the action on the button {@link Header#fetchNew}.
+	 *
+	 * @param listener the action
+	 */
+	void onFetchNew(ActionListener listener) {
+		fetchNew.addActionListener(evt -> notifyAboutFetchRequest(listener, evt));
+	}
+
+	Component getComponent() {
 		return this.component;
 	}
 
-	public JLabel getTitle() {
-		return this.title;
+	String getTitle() {
+		return title.getText();
 	}
 
-	public void setTitle(JLabel title) {
-		this.title = title;
-	}
+	void setTitle(String title) {
+		Assertion.check(title != null, "TITLE_MUST_NOT_BE_NULL");
 
-	/**
-	 *
-	 * @param timeline
-	 */
-	Header(Timeline<I> timeline) {
-		// TODO - implement Header.Header
-		throw new UnsupportedOperationException();
+		this.title.setText(title);
 	}
 
 	/**
+	 * If there is new commits, show the fetchNew button with the count of new commits.
 	 *
-	 * @param timeline
-	 * @param backgroundProcessor
-	 */
-	Header(Timeline<I> timeline, BackgroundProcessor backgroundProcessor) {
-		// TODO - implement Header.Header
-		throw new UnsupportedOperationException();
-	}
-
-	void createUi() {
-		// TODO - implement Header.createUi
-		throw new UnsupportedOperationException();
-	}
-
-	void update() {
-		// TODO - implement Header.update
-		throw new UnsupportedOperationException();
-	}
-
-	/**
-	 *
-	 * @param listener
-	 */
-	void onFetchNew(ActionListener listener) {
-		// TODO - implement Header.onFetchNew
-		throw new UnsupportedOperationException();
-	}
-
-	/**
-	 *
-	 * @param count
+	 * @param count the count of new commits.
 	 */
 	private void update(int count) {
-		// TODO - implement Header.update
-		throw new UnsupportedOperationException();
+		fetchNew.setText(count + " new");
+		fetchNew.setVisible(count > 0);
 	}
 
 	/**
+	 * Notify about the fetch new request when the 'fetchNew' button is clicked.
 	 *
 	 * @param listener
 	 * @param evt
 	 */
 	private void notifyAboutFetchRequest(ActionListener listener, ActionEvent evt) {
-		// TODO - implement Header.notifyAboutFetchRequest
-		throw new UnsupportedOperationException();
+		listener.actionPerformed(new ActionEvent(component, evt.getID(), evt.getActionCommand()));
+		fetchNew.setVisible(false);
 	}
 
 	private void createComponent() {
-		// TODO - implement Header.createComponent
-		throw new UnsupportedOperationException();
+		component = new JPanel();
 	}
 
 	private void createTitle() {
-		// TODO - implement Header.createTitle
-		throw new UnsupportedOperationException();
+		title = new JLabel(TITLE);
+		Resources.changeFontSize(title, 10);
 	}
 
 	private void createFetchNew() {
-		// TODO - implement Header.createFetchNew
-		throw new UnsupportedOperationException();
+		fetchNew = new JButton();
+		fetchNew.setVisible(false);
 	}
 
 	private void layout() {
-		// TODO - implement Header.layout
-		throw new UnsupportedOperationException();
+		component.setLayout(new FlowLayout(FlowLayout.CENTER, 25, 10));
+		component.add(title);
+		component.add(fetchNew);
 	}
 
 }

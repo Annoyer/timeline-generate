@@ -1,9 +1,11 @@
 package org.jcy.timeline.swt.ui;
 
 import org.jcy.timeline.core.model.Item;
+import org.jcy.timeline.core.model.Timeline;
 import org.jcy.timeline.core.ui.ItemViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.jcy.timeline.core.ui.AutoUpdate;
+import org.jcy.timeline.util.Assertion;
 import org.jcy.timeline.util.BackgroundProcessor;
 import org.jcy.timeline.core.model.ItemProvider;
 import org.jcy.timeline.core.ui.ItemUiFactory;
@@ -16,8 +18,7 @@ class SwtTimelineCompound<I extends Item> {
 	private final Header<I> header;
 
 	static BackgroundProcessor createBackgroundProcessor() {
-		// TODO - implement SwtTimelineCompound.createBackgroundProcessor
-		throw new UnsupportedOperationException();
+		return new BackgroundProcessor(new SwtUiThreadDispatcher());
 	}
 
 	/**
@@ -27,8 +28,14 @@ class SwtTimelineCompound<I extends Item> {
 	 * @param sessionStorage
 	 */
 	SwtTimelineCompound(ItemProvider<I> itemProvider, ItemUiFactory<I, Composite> itemUiFactory, SessionStorage<I> sessionStorage) {
-		// TODO - implement SwtTimelineCompound.SwtTimelineCompound
-		throw new UnsupportedOperationException();
+		Assertion.check(itemProvider != null, "ITEM_PROVIDER_MUST_NOT_BE_NULL");
+		Assertion.check(itemUiFactory != null, "ITEM_UI_FACTORY_MUST_NOT_BE_NULL");
+		Assertion.check(sessionStorage != null, "SESSION_STORAGE_MUST_NOT_BE_NULL");
+
+		Timeline<I> timeline = new Timeline<>(itemProvider, sessionStorage);
+		itemViewer = new ItemViewer<>(new SwtItemViewerCompound<>(timeline, itemUiFactory));
+		header = new Header<>(timeline);
+		autoUpdate = new SwtAutoUpdate<>(header, itemViewer, 5_000);
 	}
 
 	ItemViewer<I, Composite> getItemViewer() {
@@ -40,8 +47,7 @@ class SwtTimelineCompound<I extends Item> {
 	}
 
 	AutoUpdate<I, Composite> getAutoUpdate() {
-		// TODO - implement SwtTimelineCompound.getAutoUpdate
-		throw new UnsupportedOperationException();
+		return autoUpdate;
 	}
 
 }

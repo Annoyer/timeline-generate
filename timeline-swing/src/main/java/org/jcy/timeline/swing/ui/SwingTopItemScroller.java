@@ -14,63 +14,68 @@ public class SwingTopItemScroller<I extends Item> implements TopItemScroller {
 	static final int TOP_POSITION = 5;
 	private final UiThreadDispatcher uiThreadDispatcher;
 	private final ItemUiMap<I, Container> itemUiMap;
-	private SwingItemUiList<I> itemUiList;
+	private final SwingItemUiList<I> itemUiList;
 	private final Timeline<I> timeline;
 
-	public void doScrollIntoView() {
-		// TODO - implement SwingTopItemScroller.doScrollIntoView
-		throw new UnsupportedOperationException();
+	SwingTopItemScroller(Timeline<I> timeline, ItemUiMap<I, Container> itemUiMap, SwingItemUiList<I> itemUiList) {
+		this(timeline, itemUiMap, itemUiList, new SwingUiThreadDispatcher());
 	}
 
-	/**
-	 *
-	 * @param newValue
-	 */
-	void setScrollbarSelection(int newValue) {
-		// TODO - implement SwingTopItemScroller.setScrollbarSelection
-		throw new UnsupportedOperationException();
-	}
-
-	private SwingItemUi<I> getItemUi() {
-		// TODO - implement SwingTopItemScroller.getItemUi
-		throw new UnsupportedOperationException();
-	}
-
-	/**
-	 *
-	 * @param component
-	 */
-	private void updateVerticalScrollbarSelection(Component component) {
-		// TODO - implement SwingTopItemScroller.updateVerticalScrollbarSelection
-		throw new UnsupportedOperationException();
-	}
-
-	/**
-	 *
-	 * @param verticalLocation
-	 */
-	private void updateVerticalScrollbarSelection(double verticalLocation) {
-		// TODO - implement SwingTopItemScroller.updateVerticalScrollbarSelection
-		throw new UnsupportedOperationException();
-	}
-
-	/**
-	 *
-	 * @param component
-	 */
-	private double computeVerticalLocation(Component component) {
-		// TODO - implement SwingTopItemScroller.computeVerticalLocation
-		throw new UnsupportedOperationException();
-	}
-
-	private JScrollPane getContentPane() {
-		// TODO - implement SwingTopItemScroller.getContentPane
-		throw new UnsupportedOperationException();
+	SwingTopItemScroller(Timeline<I> timeline,
+						 ItemUiMap<I, Container> itemUiMap,
+						 SwingItemUiList<I> itemUiList,
+						 UiThreadDispatcher dispatcher) {
+		this.uiThreadDispatcher = dispatcher;
+		this.itemUiList = itemUiList;
+		this.itemUiMap = itemUiMap;
+		this.timeline = timeline;
 	}
 
 	public void scrollIntoView() {
-		// TODO - implement SwingTopItemScroller.scrollIntoView
-		throw new UnsupportedOperationException();
+		uiThreadDispatcher.dispatch(() -> doScrollIntoView());
+	}
+	
+	private void doScrollIntoView() {
+		if (timeline.getTopItem().isPresent()) {
+			SwingItemUi<I> itemUi = getItemUi();
+			if (itemUi != null) {
+				Component component = itemUi.getComponent();
+				if (component.isShowing()) {
+					updateVerticalScrollbarSelection(component);
+				}
+			}
+		}
+	}
+
+	void setScrollbarSelection(int newValue) {
+		getContentPane().getVerticalScrollBar().getModel().setValue(newValue);
+	}
+
+	private SwingItemUi<I> getItemUi() {
+		I item = timeline.getTopItem().get();
+		return (SwingItemUi<I>) itemUiMap.findByItemId(item.getId());
+	}
+
+	private void updateVerticalScrollbarSelection(Component component) {
+		double verticalLocation = computeVerticalLocation(component);
+		if (verticalLocation < TOP_POSITION) {
+			updateVerticalScrollbarSelection(verticalLocation);
+		}
+	}
+
+	private void updateVerticalScrollbarSelection(double verticalLocation) {
+		int oldValue = getContentPane().getVerticalScrollBar().getModel().getValue();
+		setScrollbarSelection(oldValue - 15 + (int) verticalLocation);
+	}
+
+	private double computeVerticalLocation(Component component) {
+		double y1 = itemUiList.getUiRoot().getLocationOnScreen().getY();
+		double y2 = component.getLocationOnScreen().getY();
+		return y2 - y1;
+	}
+
+	private JScrollPane getContentPane() {
+		return itemUiList.getUiRoot();
 	}
 
 }

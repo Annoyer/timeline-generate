@@ -1,30 +1,40 @@
 package org.jcy.timeline.swing.git;
 
+import org.jcy.timeline.core.provider.git.GitItemProvider;
+import org.jcy.timeline.core.provider.git.GitItemSerialization;
+import org.jcy.timeline.core.util.FileSessionStorage;
 import org.jcy.timeline.core.util.FileStorageStructure;
-import org.jcy.timeline.swing.ui.SwingTImeline;
 import org.jcy.timeline.core.provider.git.GitItem;
+import org.jcy.timeline.swing.ui.SwingTimeline;
+
+import java.io.File;
 
 public class GitTimelineFactory {
 
 	private final FileStorageStructure storageStructure;
 
-	/**
-	 *
-	 * @param storageStructure
-	 */
 	public GitTimelineFactory(FileStorageStructure storageStructure) {
-		// TODO - implement GitTimelineFactory.GitTimelineFactory
-		throw new UnsupportedOperationException();
+		this.storageStructure = storageStructure;
 	}
 
 	/**
+	 * Create the timeline.
 	 *
-	 * @param uri
-	 * @param name
+	 * @param uri remote git repository uri.
+	 * @param name git project name.
 	 */
-	public SwingTImeline<GitItem> create(String uri, String name) {
-		// TODO - implement GitTimelineFactory.create
-		throw new UnsupportedOperationException();
+	public SwingTimeline<GitItem> create(String uri, String name) {
+		// git remote repository, 读取commit缓存至本地文件
+		File timelineDirectory = storageStructure.getTimelineDirectory();
+		GitItemProvider itemProvider = new GitItemProvider(uri, timelineDirectory, name);
+
+		// swing UI factory
+		GitItemUiFactory itemUiFactory = new GitItemUiFactory();
+
+		// 获取本地缓存的git commit记录（C:\Users\joy12\.timeline\session.storage)
+		File storageFile = storageStructure.getStorageFile();
+		FileSessionStorage<GitItem> storage = new FileSessionStorage<>(storageFile, new GitItemSerialization());
+		return new SwingTimeline<>(itemProvider, itemUiFactory, storage);
 	}
 
 }

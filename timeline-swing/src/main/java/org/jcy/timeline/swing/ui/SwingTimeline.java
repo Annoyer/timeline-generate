@@ -2,12 +2,14 @@ package org.jcy.timeline.swing.ui;
 
 import org.jcy.timeline.core.model.Item;
 import org.jcy.timeline.core.ui.ItemViewer;
-import java.awt.Container;
+
+import java.awt.*;
+
 import org.jcy.timeline.core.ui.AutoUpdate;
 import org.jcy.timeline.core.model.ItemProvider;
 import org.jcy.timeline.core.ui.ItemUiFactory;
 import org.jcy.timeline.core.model.SessionStorage;
-import java.awt.Component;
+
 import javax.swing.JPanel;
 
 public class SwingTimeline<I extends Item> {
@@ -15,59 +17,50 @@ public class SwingTimeline<I extends Item> {
 	private final ItemViewer<I, Container> itemViewer;
 	private final AutoUpdate<I, Container> autoUpdate;
 	private final Header<I> header;
+	private final JPanel component;
 
-	/**
-	 *
-	 * @param itemProvider
-	 * @param itemUiFactory
-	 * @param sessionStorage
-	 */
-	public void SwingTimeline(ItemProvider<I> itemProvider, ItemUiFactory<I, Container> itemUiFactory, SessionStorage<I> sessionStorage) {
-		// TODO - implement SwingTImeline.SwingTimeline
-		throw new UnsupportedOperationException();
+	public SwingTimeline(ItemProvider<I> itemProvider, ItemUiFactory<I, Container> itemUiFactory, SessionStorage<I> sessionStorage) {
+		this(new SwingTimelineCompound<>(itemProvider, itemUiFactory, sessionStorage));
 	}
 
-	/**
-	 *
-	 * @param compound
-	 */
-	void SwingTimeline(SwingTimelineCompound<I> compound) {
-		// TODO - implement SwingTImeline.SwingTimeline
-		throw new UnsupportedOperationException();
+	SwingTimeline(SwingTimelineCompound<I> compound) {
+		itemViewer = compound.getItemViewer();
+		header = compound.getHeader();
+		autoUpdate = compound.getAutoUpdate();
+		component = initialize();
 	}
 
 	public Component getComponent() {
-		// TODO - implement SwingTImeline.getComponent
-		throw new UnsupportedOperationException();
+		return component;
 	}
 
 	public void startAutoRefresh() {
-		// TODO - implement SwingTImeline.startAutoRefresh
-		throw new UnsupportedOperationException();
+		autoUpdate.start();
 	}
 
 	public void stopAutoRefresh() {
-		// TODO - implement SwingTImeline.stopAutoRefresh
-		throw new UnsupportedOperationException();
+		autoUpdate.stop();
 	}
 
-	/**
-	 *
-	 * @param title
-	 */
 	public void setTitle(String title) {
-		// TODO - implement SwingTImeline.setTitle
-		throw new UnsupportedOperationException();
+		header.setTitle(title);
 	}
 
 	private JPanel initialize() {
-		// TODO - implement SwingTImeline.initialize
-		throw new UnsupportedOperationException();
+		header.createUi();
+		itemViewer.createUi(null);
+		JPanel result = createComponent();
+		itemViewer.initialize();
+		header.onFetchNew(event -> itemViewer.fetchNew());
+		return result;
 	}
 
 	private JPanel createComponent() {
-		// TODO - implement SwingTImeline.createComponent
-		throw new UnsupportedOperationException();
+		JPanel result = new JPanel();
+		result.setLayout(new BorderLayout());
+		result.add(header.getComponent(), BorderLayout.NORTH);
+		result.add(itemViewer.getUiRoot(), BorderLayout.CENTER);
+		return result;
 	}
 
 }

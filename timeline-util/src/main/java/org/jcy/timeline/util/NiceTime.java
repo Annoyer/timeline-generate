@@ -1,21 +1,33 @@
 package org.jcy.timeline.util;
 
-public class NiceTime {
+import org.ocpsoft.prettytime.PrettyTime;
 
-	private org.ocpsoft.prettytime.PrettyTime prettyTime;
+import java.util.Date;
+import java.util.Locale;
 
-	public NiceTime() {
-		// TODO - implement NiceTime.NiceTime
-		throw new UnsupportedOperationException();
+public final class NiceTime {
+
+	private static PrettyTime prettyTime = new PrettyTime(Locale.ENGLISH);
+
+	/**
+	 * Format the date into the duration util now.
+	 *
+	 * @param then date.
+	 */
+	public static String format(Date then) {
+		return prettyTime.format(then);
 	}
 
 	/**
-	 *
-	 * @param then
+	 * Format the date. (optimize)
+	 * @param thenInMillis date in mills.
 	 */
-	public String format(java.util.Date then) {
-		// TODO - implement NiceTime.format
-		throw new UnsupportedOperationException();
+	public static String format(long thenInMillis) {
+		return prettyTime.format(new Date(thenInMillis));
+	}
+
+	// optimize: 静态方法就可以了。
+	private NiceTime() {
 	}
 
 }

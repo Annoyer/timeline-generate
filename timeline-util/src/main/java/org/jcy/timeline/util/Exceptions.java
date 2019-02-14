@@ -2,55 +2,59 @@ package org.jcy.timeline.util;
 
 import java.util.concurrent.Callable;
 
-public class Exceptions<V> {
+import static java.lang.String.format;
+
+public final class Exceptions<V> {
 
 	private Callable<V> callable;
 
 	/**
+	 * Wrap the {@param callable}.
 	 *
-	 * @param callable
+	 * @param callable callable.
 	 */
-	public static <V>Exceptions guard(Callable<V> callable) {
-		// TODO - implement Exceptions.guard
-		throw new UnsupportedOperationException();
+	public static <V>Exceptions<V> guard(Callable<V> callable) {
+		return new Exceptions<>(callable);
 	}
 
 	/**
+	 * Execute the task and wrap the possible exception.
 	 *
-	 * @param targetType
+	 * @param targetType wrapping type of exception.
 	 */
 	public <T extends RuntimeException>V with(Class<T> targetType) {
-		// TODO - implement Iterables.Iterables
-		throw new UnsupportedOperationException();
+		try {
+			return callable.call();
+		} catch (RuntimeException rte) {
+			throw rte;
+		} catch (Exception cause) {
+			throw createExceptionEnvelope(targetType, cause);
+		}
 	}
 
 	/**
+	 * Wrap the exception into {@param targetType}.
 	 *
-	 * @param targetType
-	 * @param cause
+	 * @param targetType wrapping type.
+	 * @param cause actual exception.
 	 */
-	private static <T extends Runnable>T createExceptionEnvelope(Class<T> targetType, Exception cause) {
-		// TODO - implement Iterables.Iterables
-		throw new UnsupportedOperationException();
+	private static <T extends RuntimeException>T createExceptionEnvelope(Class<T> targetType, Exception cause) {
+		try {
+			return targetType.getConstructor(Throwable.class).newInstance(cause);
+		} catch (Exception e) {
+			throw new IllegalArgumentException(createProblemMessage(targetType, cause), e);
+		}
 	}
 
-	/**
-	 *
-	 * @param targetType
-	 * @param cause
-	 */
-	private static <T extends java.lang.RuntimeException>String createProblemMessage(Class<T> targetType, Exception cause) {
-		// TODO - implement Iterables.Iterables
-		throw new UnsupportedOperationException();
+	private static <T extends RuntimeException>String createProblemMessage(Class<T> targetType, Exception cause) {
+		return format("Target exception type <%s> cannot be instanciated to defuse checked exception <%s[%s]>.",
+				targetType.getName(),
+				cause.getClass().getName(),
+				cause.getMessage());
 	}
 
-	/**
-	 *
-	 * @param callable
-	 */
 	private Exceptions(Callable<V> callable) {
-		// TODO - implement Exceptions.Exceptions
-		throw new UnsupportedOperationException();
+		this.callable = callable;
 	}
 
 }

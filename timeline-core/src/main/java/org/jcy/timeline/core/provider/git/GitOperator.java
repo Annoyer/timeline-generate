@@ -3,6 +3,10 @@ package org.jcy.timeline.core.provider.git;
 import java.io.File;
 import java.util.concurrent.Callable;
 import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.errors.RepositoryNotFoundException;
+import org.jcy.timeline.util.Exceptions;
+import org.jcy.timeline.util.Messages;
+
 import java.io.IOException;
 
 class GitOperator {
@@ -10,44 +14,58 @@ class GitOperator {
 	private final File repositoryLocation;
 
 	/**
+	 * Create an operation with specific git repository inferred by {@param repositoryLocation}。
 	 *
-	 * @param repositoryLocation
+	 * @param repositoryLocation location of the local git repository in file system.
 	 */
 	GitOperator(File repositoryLocation) {
-		// TODO - implement GitOperator.GitOperator
-		throw new UnsupportedOperationException();
+		this.repositoryLocation = repositoryLocation;
+		openRepository().close();
 	}
 
 	/**
+	 * Execute the {@param gitOperation}.
 	 *
-	 * @param gitOperation
+	 * @param gitOperation git operation.
 	 */
-	public <I>I execute(org.jcy.timeline.core.provider.git.GitOperator.GitOperation<I> gitOperation) {
-		// TODO - implement GitOperator.execute
-		throw new UnsupportedOperationException();
+	<I>I execute(GitOperation<I> gitOperation) {
+		Git git = openRepository();
+		try {
+			return guarded(() -> gitOperation.execute(git));
+		} finally {
+			git.close();
+		}
 	}
 
 	/**
+	 * Execute the callable and envelop the possiable Exception.
 	 *
-	 * @param callable
+	 * @param callable callable.
 	 */
-	public <I>I guarded(Callable<I> callable) {
-		// TODO - implement GitOperator.guarded
-		throw new UnsupportedOperationException();
+	static <I>I guarded(Callable<I> callable) {
+		return Exceptions.guard(callable).with(IllegalStateException.class);
 	}
 
+	/**
+	 * Open the git repository.
+	 *
+	 * @return Git API.
+	 */
 	private Git openRepository() {
-		// TODO - implement GitOperator.openRepository
-		throw new UnsupportedOperationException();
+		return guarded(() -> openRepository(repositoryLocation));
 	}
 
 	/**
+	 * Open the git repository.
 	 *
-	 * @param repositoryDir
+	 * @param repositoryDir local repository location.
 	 */
 	private static Git openRepository(File repositoryDir) throws IOException {
-		// TODO - implement GitOperator.openRepository
-		throw new UnsupportedOperationException();
+		try {
+			return Git.open(repositoryDir);
+		} catch (RepositoryNotFoundException rnfe) {
+			throw new IllegalArgumentException(Messages.get("DIRECTORY_CONTAINS_NO_GIT_REPOSITORY", repositoryDir), rnfe);
+		}
 	}
 
 
@@ -55,8 +73,9 @@ class GitOperator {
 	interface GitOperation<I> {
 
 		/**
+		 * Execute the git operation.
 		 *
-		 * @param git
+		 * @param git Git API.
 		 */
 		I execute(Git git) throws Exception;
 

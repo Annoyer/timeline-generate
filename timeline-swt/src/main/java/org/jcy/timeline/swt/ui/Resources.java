@@ -1,20 +1,24 @@
 package org.jcy.timeline.swt.ui;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
+
+import static java.util.Arrays.asList;
 
 public class Resources {
 
 	public static final int MARGIN = 5;
 
 	public static Color getColorWhite() {
-		// TODO - implement Resources.getColorWhite
-		throw new UnsupportedOperationException();
+		return getSystemColor(SWT.COLOR_WHITE);
 	}
 
 	public static Color getColorRed() {
-		// TODO - implement Resources.getColorRed
-		throw new UnsupportedOperationException();
+		return getSystemColor(SWT.COLOR_RED);
 	}
 
 	/**
@@ -22,8 +26,7 @@ public class Resources {
 	 * @param colorCode
 	 */
 	private static Color getSystemColor(int colorCode) {
-		// TODO - implement Resources.getSystemColor
-		throw new UnsupportedOperationException();
+		return Display.getCurrent().getSystemColor(colorCode);
 	}
 
 	/**
@@ -32,8 +35,11 @@ public class Resources {
 	 * @param increment
 	 */
 	public static void changeFontHeight(Control control, int increment) {
-		// TODO - implement Resources.changeFontHeight
-		throw new UnsupportedOperationException();
+		FontData[] fontData = control.getFont().getFontData();
+		asList(fontData).forEach(data -> data.setHeight(data.getHeight() + increment));
+		Font newFont = new Font(control.getDisplay(), fontData);
+		control.setFont(newFont);
+		control.addListener(SWT.Dispose, evt -> newFont.dispose());
 	}
 
 }

@@ -1,9 +1,15 @@
 package org.jcy.timeline.swt;
 
 import java.io.File;
+import java.util.Locale;
+
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Display;
+import org.jcy.timeline.core.util.FileStorageStructure;
 import org.jcy.timeline.swt.git.GitTimelineFactory;
+import org.jcy.timeline.swt.ui.SwtTimeline;
 
 public class Application {
 
@@ -16,8 +22,13 @@ public class Application {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO - implement Application.main
-		throw new UnsupportedOperationException();
+		Locale.setDefault(Locale.ENGLISH);
+		Display display = Display.getDefault();
+		Shell shell = createShell(display);
+		SwtTimeline<?> timeline = createTimelineFactory().create(shell, URI, REPOSITORY_NAME);
+		timeline.setTitle("JUnit");
+		timeline.startAutoRefresh();
+		spinUiLoop(display, shell);
 	}
 
 	/**
@@ -25,8 +36,10 @@ public class Application {
 	 * @param display
 	 */
 	private static Shell createShell(Display display) {
-		// TODO - implement Application.createShell
-		throw new UnsupportedOperationException();
+		Shell result = new Shell(display, SWT.SHELL_TRIM);
+		result.setLayout(new FillLayout());
+		result.setBounds(100, 100, 350, 700);
+		return result;
 	}
 
 	/**
@@ -35,13 +48,15 @@ public class Application {
 	 * @param shell
 	 */
 	private static void spinUiLoop(Display display, Shell shell) {
-		// TODO - implement Application.spinUiLoop
-		throw new UnsupportedOperationException();
+		shell.open();
+		while (!shell.isDisposed()) {
+			if (!display.readAndDispatch()) {
+				display.sleep();
+			}
+		}
 	}
 
 	private static GitTimelineFactory createTimelineFactory() {
-		// TODO - implement Application.createTimelineFactory
-		throw new UnsupportedOperationException();
+		return new GitTimelineFactory(new FileStorageStructure(BASE_DIRECTORY));
 	}
-
 }

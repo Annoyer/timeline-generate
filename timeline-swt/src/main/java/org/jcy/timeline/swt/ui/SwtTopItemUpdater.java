@@ -1,5 +1,7 @@
 package org.jcy.timeline.swt.ui;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.ScrollBar;
 import org.jcy.timeline.core.model.Item;
 import org.jcy.timeline.core.ui.TopItemUpdater;
 import org.eclipse.swt.widgets.Composite;
@@ -22,8 +24,7 @@ public class SwtTopItemUpdater<I extends Item> extends TopItemUpdater<I, Composi
 	 * @param itemUiList
 	 */
 	SwtTopItemUpdater(Timeline<I> timeline, ItemUiMap<I, Composite> itemUiMap, SwtItemUiList<I> itemUiList) {
-		// TODO - implement SwtTopItemUpdater.SwtTopItemUpdater
-		throw new UnsupportedOperationException();
+		this(timeline, itemUiMap, itemUiList, new SwtUiThreadDispatcher());
 	}
 
 	/**
@@ -34,8 +35,9 @@ public class SwtTopItemUpdater<I extends Item> extends TopItemUpdater<I, Composi
 	 * @param dispatcher
 	 */
 	SwtTopItemUpdater(Timeline<I> timeline, ItemUiMap<I, Composite> itemUiMap, SwtItemUiList<I> itemUiList, UiThreadDispatcher dispatcher) {
-		// TODO - implement SwtTopItemUpdater.SwtTopItemUpdater
-		throw new UnsupportedOperationException();
+		super(timeline, itemUiMap);
+		this.uiThreadDispatcher = dispatcher;
+		this.itemUiList = itemUiList;
 	}
 
 	/**
@@ -43,13 +45,14 @@ public class SwtTopItemUpdater<I extends Item> extends TopItemUpdater<I, Composi
 	 * @param control
 	 */
 	private boolean isBelowTop(Control control) {
-		// TODO - implement SwtTopItemUpdater.isBelowTop
-		throw new UnsupportedOperationException();
+		Composite root = itemUiList.getUiRoot();
+		int y = control.getDisplay().map(control.getParent(), root, control.getLocation()).y;
+		return y + TOP_OFF_SET >= 0;
 	}
 
 	protected void register() {
-		// TODO - implement SwtTopItemUpdater.register
-		throw new UnsupportedOperationException();
+		ScrollBar verticalBar = itemUiList.getUiRoot().getVerticalBar();
+		uiThreadDispatcher.dispatch(() -> verticalBar.addListener(SWT.Selection, evt -> update()));
 	}
 
 	/**
@@ -57,8 +60,11 @@ public class SwtTopItemUpdater<I extends Item> extends TopItemUpdater<I, Composi
 	 * @param itemUi
 	 */
 	protected boolean isBelowTop(ItemUi<I> itemUi) {
-		// TODO - implement SwtTopItemUpdater.isBelowTop
-		throw new UnsupportedOperationException();
+		Control control = ((SwtItemUi<I>) itemUi).getControl();
+		if (control.isVisible()) {
+			return isBelowTop(control);
+		}
+		return false;
 	}
 
 }

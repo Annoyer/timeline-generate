@@ -1,14 +1,16 @@
 package org.jcy.timeline.swing.ui;
 
 import org.jcy.timeline.core.model.Item;
+import org.jcy.timeline.core.ui.FetchOperation;
 import org.jcy.timeline.core.ui.ItemUiList;
-import javax.swing.JScrollPane;
-import javax.swing.JButton;
-import javax.swing.JPanel;
+
+import javax.swing.*;
+
 import org.jcy.timeline.core.ui.ItemUiMap;
-import java.awt.Container;
+
+import java.awt.*;
+
 import org.jcy.timeline.util.BackgroundProcessor;
-import U;
 
 class SwingItemUiList<I extends Item> extends ItemUiList<I, Container> {
 
@@ -16,67 +18,59 @@ class SwingItemUiList<I extends Item> extends ItemUiList<I, Container> {
 	JButton fetchMore;
 	JPanel content;
 
-	/**
-	 *
-	 * @param parameter
-	 */
-	SwingItemUiList(ItemUiMap<I, Container> parameter) {
-		// TODO - implement SwingItemUiList.SwingItemUiList
-		throw new UnsupportedOperationException();
+	SwingItemUiList(ItemUiMap<I, Container> itemUiMap) {
+		this(itemUiMap, SwingTimelineCompound.createBackgroundProcessor());
+	}
+
+	SwingItemUiList(ItemUiMap<I, Container> itemUiMap, BackgroundProcessor backgroundProcessor) {
+		super(itemUiMap, backgroundProcessor);
 	}
 
 	/**
-	 *
-	 * @param parameter
-	 * @param backgroundProcessor
+	 * Only one thread could do the fetch more operation at the same time.
 	 */
-	SwingItemUiList(ItemUiMap<I, Container> parameter, BackgroundProcessor backgroundProcessor) {
-		// TODO - implement SwingItemUiList.SwingItemUiList
-		throw new UnsupportedOperationException();
-	}
-
-	private void createContent() {
-		// TODO - implement SwingItemUiList.createContent
-		throw new UnsupportedOperationException();
-	}
-
-	private void createComponent() {
-		// TODO - implement SwingItemUiList.createComponent
-		throw new UnsupportedOperationException();
-	}
-
-	private void createFetchMore() {
-		// TODO - implement SwingItemUiList.createFetchMore
-		throw new UnsupportedOperationException();
-	}
-
 	protected void beforeContentUpdate() {
-		// TODO - implement SwingItemUiList.beforeContentUpdate
-		throw new UnsupportedOperationException();
+		content.remove(fetchMore);
 	}
 
 	protected void afterContentUpdate() {
-		// TODO - implement SwingItemUiList.afterContentUpdate
-		throw new UnsupportedOperationException();
+		content.add(fetchMore, SwingItemUi.createUiItemConstraints());
+		content.getParent().doLayout();
 	}
 
 	/**
+	 * Create UI.
 	 *
-	 * @param parent
+	 * @param parent parent container.
 	 */
 	protected void createUi(Container parent) {
-		// TODO - implement SwingItemUiList.createUi
-		throw new UnsupportedOperationException();
+		createContent();
+		createComponent();
+		createFetchMore();
 	}
 
 	protected Container getContent() {
-		// TODO - implement SwingItemUiList.getContent
-		throw new UnsupportedOperationException();
+		return content;
 	}
 
-	protected Container getUiRoot() {
-		// TODO - implement SwingItemUiList.getUiRoot
-		throw new UnsupportedOperationException();
+	protected JScrollPane getUiRoot() {
+		return uiRoot;
 	}
 
+	private void createContent() {
+		content = new JPanel();
+		content.setLayout(new GridBagLayout());
+		content.setBackground(Resources.WHITE);
+	}
+
+	private void createComponent() {
+		uiRoot = new JScrollPane(content);
+		uiRoot.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+	}
+
+	private void createFetchMore() {
+		fetchMore = new JButton("more");
+		fetchMore.addActionListener(event -> fetchInBackground(FetchOperation.MORE));
+		content.add(fetchMore);
+	}
 }

@@ -34,11 +34,5 @@
             <artifactId>timeline-util</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.jcy</groupId>
-            <artifactId>timeline-test-util</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 </project>

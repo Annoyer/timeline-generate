@@ -9,23 +9,25 @@ public class Resources {
 	public static final Color WHITE = new Color(255, 255, 255);
 
 	/**
+	 * Change the font size in the component.
 	 *
-	 * @param conponent
+	 * @param component
 	 * @param increment
 	 */
-	public static void changeFontSize(Component conponent, int increment) {
-		// TODO - implement Resources.changeFontSize
-		throw new UnsupportedOperationException();
+	public static void changeFontSize(Component component, int increment) {
+		Font baseFont = component.getFont();
+		Font font = createFrom(baseFont, increment);
+		component.setFont(font);
 	}
 
 	/**
+	 * Create new font.
 	 *
 	 * @param baseFont
 	 * @param increment
 	 */
 	static Font createFrom(Font baseFont, int increment) {
-		// TODO - implement Resources.createFrom
-		throw new UnsupportedOperationException();
+		return new Font(baseFont.getName(), baseFont.getStyle(), baseFont.getSize() + increment);
 	}
 
 }

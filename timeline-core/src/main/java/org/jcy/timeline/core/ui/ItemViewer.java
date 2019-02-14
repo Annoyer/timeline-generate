@@ -9,41 +9,60 @@ public class ItemViewer<I extends Item, U> {
 	private final TopItemUpdater<I, U> topItemUpdater;
 
 	/**
+	 * Create a new ItemViewer with {@param itemViewerCompound}.
+	 * The {@param itemViewerCompound} consists of
+	 * 		an {@link ItemUiList},
+	 * 		a {@link TopItemScroller}
+	 * 		and a {@link TopItemUpdater}.
 	 *
-	 * @param itemViewerCompound
+	 * @param itemViewerCompound item viewer compound.
 	 */
 	public ItemViewer(ItemViewerCompound<I, U> itemViewerCompound) {
-		// TODO - implement ItemViewer.ItemViewer
-		throw new UnsupportedOperationException();
+		itemUiList = itemViewerCompound.getItemUiList();
+		scroller = itemViewerCompound.getScroller();
+		topItemUpdater = itemViewerCompound.getTopItemUpdater();
 	}
 
 	/**
-	 *
+	 * todo
 	 * @param parent
 	 */
 	public void createUi(U parent) {
-		// TODO - implement ItemViewer.createUi
-		throw new UnsupportedOperationException();
+		itemUiList.createUi(parent);
 	}
 
+	/**
+	 * todo
+	 * @return
+	 */
 	public U getUiRoot() {
-		// TODO - implement ItemViewer.getUiRoot
-		throw new UnsupportedOperationException();
+		return itemUiList.getUiRoot();
 	}
 
+	/**
+	 * Initialize the item viewer.
+	 */
 	public void initialize() {
-		// TODO - implement ItemViewer.initialize
-		throw new UnsupportedOperationException();
+		if (itemUiList.isTimelineEmpty()) {
+			itemUiList.fetch(FetchOperation.MORE);
+		}
+		itemUiList.update();
+		scroller.scrollIntoView();
+		topItemUpdater.register();
 	}
 
+	/**
+	 * Fetch new.
+	 */
 	public void fetchNew() {
-		// TODO - implement ItemViewer.fetchNew
-		throw new UnsupportedOperationException();
+		itemUiList.fetch(FetchOperation.NEW);
 	}
 
+	/**
+	 * Update the item ui list.
+	 */
 	public void update() {
-		// TODO - implement ItemViewer.update
-		throw new UnsupportedOperationException();
+		itemUiList.update();
 	}
 
 }

@@ -1,7 +1,10 @@
 package org.jcy.timeline.swt.ui;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FormLayout;
 import org.jcy.timeline.core.model.Item;
 import org.jcy.timeline.core.model.Timeline;
+import org.jcy.timeline.util.Assertion;
 import org.jcy.timeline.util.BackgroundProcessor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Button;
@@ -9,6 +12,11 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Event;
+
+import static org.jcy.timeline.swt.ui.Resources.MARGIN;
+import static org.jcy.timeline.swt.ui.Resources.changeFontHeight;
+import static org.jcy.timeline.swt.ui.SwtTimelineCompound.createBackgroundProcessor;
+import static org.jcy.timeline.swt.ui.util.FormDatas.attach;
 
 class Header<I extends Item> {
 
@@ -24,8 +32,7 @@ class Header<I extends Item> {
 	 * @param timeline
 	 */
 	Header(Timeline<I> timeline) {
-		// TODO - implement Header.Header
-		throw new UnsupportedOperationException();
+		this(timeline, createBackgroundProcessor());
 	}
 
 	/**
@@ -34,50 +41,50 @@ class Header<I extends Item> {
 	 * @param backgroundProcessor
 	 */
 	Header(Timeline<I> timeline, BackgroundProcessor backgroundProcessor) {
-		// TODO - implement Header.Header
-		throw new UnsupportedOperationException();
+		this.backgroundProcessor = backgroundProcessor;
+		this.timeline = timeline;
 	}
 
 	/**
+	 * Create the UI of header.
 	 *
-	 * @param parent
+	 * @param parent context.
 	 */
 	void createUi(Composite parent) {
-		// TODO - implement Header.createUi
-		throw new UnsupportedOperationException();
+		createControl(parent);
+		createTitle();
+		createFetchNew();
+		layout();
 	}
 
 	Control getControl() {
-		// TODO - implement Header.getControl
-		throw new UnsupportedOperationException();
+		return control;
 	}
 
 	void update() {
-		// TODO - implement Header.update
-		throw new UnsupportedOperationException();
+		backgroundProcessor.process(() -> {
+			int count = timeline.getNewCount();
+			backgroundProcessor.dispatchToUiThread(() -> update(count));
+		});
 	}
 
 	/**
+	 * Bind the click event of Button 'fetchNew'.
 	 *
-	 * @param listener
+	 * @param listener action
 	 */
 	void onFetchNew(Listener listener) {
-		// TODO - implement Header.onFetchNew
-		throw new UnsupportedOperationException();
+		fetchNew.addListener(SWT.Selection, evt -> notifyAboutFetchRequest(listener, evt));
 	}
 
-	/**
-	 *
-	 * @param title
-	 */
 	void setTitle(String title) {
-		// TODO - implement Header.setTitle
-		throw new UnsupportedOperationException();
+		Assertion.check(title != null, "TITLE_MUST_NOT_BE_NULL");
+
+		this.title.setText(title);
 	}
 
 	String getTitle() {
-		// TODO - implement Header.getTitle
-		throw new UnsupportedOperationException();
+		return title.getText();
 	}
 
 	/**
@@ -85,8 +92,8 @@ class Header<I extends Item> {
 	 * @param count
 	 */
 	private void update(int count) {
-		// TODO - implement Header.update
-		throw new UnsupportedOperationException();
+		fetchNew.setText(count + " new");
+		fetchNew.setVisible(count > 0);
 	}
 
 	/**
@@ -95,8 +102,10 @@ class Header<I extends Item> {
 	 * @param evt
 	 */
 	private void notifyAboutFetchRequest(Listener listener, Event evt) {
-		// TODO - implement Header.notifyAboutFetchRequest
-		throw new UnsupportedOperationException();
+		Event event = new Event();
+		event.widget = control;
+		listener.handleEvent(event);
+		fetchNew.setVisible(false);
 	}
 
 	/**
@@ -104,23 +113,27 @@ class Header<I extends Item> {
 	 * @param parent
 	 */
 	private void createControl(Composite parent) {
-		// TODO - implement Header.createControl
-		throw new UnsupportedOperationException();
+		control = new Composite(parent, SWT.NONE);
+		control.setBackgroundMode(SWT.INHERIT_DEFAULT);
+		control.setBackground(control.getDisplay().getSystemColor(SWT.COLOR_RED));
 	}
 
 	private void createTitle() {
-		// TODO - implement Header.createTitle
-		throw new UnsupportedOperationException();
+		title = new Label(control, SWT.NONE);
+		title.setText(TITLE);
+		title.setForeground(control.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+		changeFontHeight(title, 14);
 	}
 
 	private void createFetchNew() {
-		// TODO - implement Header.createFetchNew
-		throw new UnsupportedOperationException();
+		fetchNew = new Button(control, SWT.FLAT);
+		fetchNew.setVisible(false);
 	}
 
 	private void layout() {
-		// TODO - implement Header.layout
-		throw new UnsupportedOperationException();
+		control.setLayout(new FormLayout());
+		attach(title).toLeft(MARGIN * 2).toTop(MARGIN).fromRight(50, MARGIN).toBottom(MARGIN);
+		attach(fetchNew).fromLeft(60, MARGIN * 2).toTop(MARGIN * 2).toRight(MARGIN * 2).toBottom(MARGIN * 2);
 	}
 
 }

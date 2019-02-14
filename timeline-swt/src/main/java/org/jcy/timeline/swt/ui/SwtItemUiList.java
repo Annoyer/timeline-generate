@@ -1,5 +1,8 @@
 package org.jcy.timeline.swt.ui;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.jcy.timeline.core.model.Item;
 import org.jcy.timeline.core.ui.ItemUiList;
 import org.eclipse.swt.widgets.Composite;
@@ -10,29 +13,23 @@ import org.jcy.timeline.util.BackgroundProcessor;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Control;
 
+import static java.util.Arrays.asList;
+import static org.jcy.timeline.core.ui.FetchOperation.MORE;
+import static org.jcy.timeline.swt.ui.Resources.getColorWhite;
+
 class SwtItemUiList<I extends Item> extends ItemUiList<I, Composite> {
 
 	ScrolledComposite uiRoot;
 	Composite content;
 	Button fetchMore;
 
-	/**
-	 *
-	 * @param itemUiMap
-	 */
+
 	SwtItemUiList(ItemUiMap<I, Composite> itemUiMap) {
-		// TODO - implement SwtItemUiList.SwtItemUiList
-		throw new UnsupportedOperationException();
+		this(itemUiMap, SwtTimelineCompound.createBackgroundProcessor());
 	}
 
-	/**
-	 *
-	 * @param itemUiMap
-	 * @param backgroundProcessor
-	 */
 	SwtItemUiList(ItemUiMap<I, Composite> itemUiMap, BackgroundProcessor backgroundProcessor) {
-		// TODO - implement SwtItemUiList.SwtItemUiList
-		throw new UnsupportedOperationException();
+		super(itemUiMap, backgroundProcessor);
 	}
 
 	/**
@@ -40,48 +37,57 @@ class SwtItemUiList<I extends Item> extends ItemUiList<I, Composite> {
 	 * @param parent
 	 */
 	private void createControl(Composite parent) {
-		// TODO - implement SwtItemUiList.createControl
-		throw new UnsupportedOperationException();
+		uiRoot = new ScrolledComposite(parent, SWT.V_SCROLL);
+		uiRoot.setBackground(getColorWhite());
+		uiRoot.addListener(SWT.Resize, evt -> layoutContent());
 	}
 
 	private void createContent() {
-		// TODO - implement SwtItemUiList.createContent
-		throw new UnsupportedOperationException();
+		content = new Composite(uiRoot, SWT.NONE);
+		content.setBackground(getColorWhite());
+		uiRoot.setContent(content);
 	}
 
 	private void createFetchMore() {
-		// TODO - implement SwtItemUiList.createFetchMore
-		throw new UnsupportedOperationException();
+		fetchMore = new Button(content, SWT.NONE);
+		fetchMore.setText("more");
+		fetchMore.addListener(SWT.Selection, event -> fetch(MORE));
 	}
 
 	private void layoutContent() {
-		// TODO - implement SwtItemUiList.layoutContent
-		throw new UnsupportedOperationException();
+		GridLayout gridLayout = new GridLayout();
+		content.setLayout(gridLayout);
+		content.setSize(computePreferredContentSize());
+		int itemControlWidth = computePreferredContentSize().x - gridLayout.verticalSpacing * 2;
+		asList(content.getChildren()).forEach(itemControl -> setLayoutData(itemControl, itemControlWidth));
+		content.setSize(computePreferredContentSize());
+		content.layout();
 	}
+
 
 	private Point computePreferredContentSize() {
-		// TODO - implement SwtItemUiList.computePreferredContentSize
-		throw new UnsupportedOperationException();
+		return content.computeSize(uiRoot.getClientArea().width, SWT.DEFAULT, true);
 	}
 
-	/**
-	 *
-	 * @param itemControl
-	 * @param width
-	 */
 	private void setLayoutData(Control itemControl, int width) {
-		// TODO - implement SwtItemUiList.setLayoutData
-		throw new UnsupportedOperationException();
+		itemControl.setLayoutData(new GridData(width, SWT.DEFAULT));
 	}
 
 	protected void beforeContentUpdate() {
-		// TODO - implement SwtItemUiList.beforeContentUpdate
-		throw new UnsupportedOperationException();
+		fetchMore.dispose();
 	}
 
 	protected void afterContentUpdate() {
-		// TODO - implement SwtItemUiList.afterContentUpdate
-		throw new UnsupportedOperationException();
+		createFetchMore();
+		layoutContent();
+	}
+
+	protected Composite getContent() {
+		return content;
+	}
+
+	protected Composite getUiRoot() {
+		return uiRoot;
 	}
 
 	/**
@@ -89,18 +95,9 @@ class SwtItemUiList<I extends Item> extends ItemUiList<I, Composite> {
 	 * @param parent
 	 */
 	protected void createUi(Composite parent) {
-		// TODO - implement SwtItemUiList.createUi
-		throw new UnsupportedOperationException();
-	}
-
-	protected Composite getContent() {
-		// TODO - implement SwtItemUiList.getContent
-		throw new UnsupportedOperationException();
-	}
-
-	protected Composite getUiRoot() {
-		// TODO - implement SwtItemUiList.getUiRoot
-		throw new UnsupportedOperationException();
+		createControl(parent);
+		createContent();
+		createFetchMore();
 	}
 
 }

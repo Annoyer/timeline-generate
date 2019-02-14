@@ -1,13 +1,10 @@
 package org.jcy.timeline.swt.ui;
 
 import org.jcy.timeline.core.model.Item;
-import org.jcy.timeline.core.ui.ItemViewerCompound;
+import org.jcy.timeline.core.ui.*;
 import org.jcy.timeline.core.model.Timeline;
-import org.jcy.timeline.core.ui.ItemUiFactory;
 import org.eclipse.swt.widgets.Composite;
-import org.jcy.timeline.core.ui.ItemUiList;
-import org.jcy.timeline.core.ui.TopItemScroller;
-import org.jcy.timeline.core.ui.TopItemUpdater;
+import org.jcy.timeline.util.Assertion;
 
 class SwtItemViewerCompound<I extends Item> implements ItemViewerCompound {
 
@@ -21,23 +18,26 @@ class SwtItemViewerCompound<I extends Item> implements ItemViewerCompound {
 	 * @param itemUiFactory
 	 */
 	SwtItemViewerCompound(Timeline<I> timeline, ItemUiFactory<I, Composite> itemUiFactory) {
-		// TODO - implement SwtItemViewerCompound.SwtItemViewerCompound
-		throw new UnsupportedOperationException();
+		Assertion.check(timeline != null, "TIMELINE_MUST_NOT_BE_NULL");
+		Assertion.check(itemUiFactory != null, "ITEM_UI_FACTORY_MUST_NOT_BE_NULL");
+
+		ItemUiMap<I, Composite> itemUiMap = new ItemUiMap<>(timeline, itemUiFactory);
+		itemUiList = new SwtItemUiList<>(itemUiMap);
+		scroller = new SwtTopItemScroller<>(timeline, itemUiMap, itemUiList);
+		topItemUpdater = new SwtTopItemUpdater<>(timeline, itemUiMap, itemUiList);
 	}
 
+
 	public ItemUiList<I, Composite> getItemUiList() {
-		// TODO - implement SwtItemViewerCompound.getItemUiList
-		throw new UnsupportedOperationException();
+		return itemUiList;
 	}
 
 	public TopItemScroller<I> getScroller() {
-		// TODO - implement SwtItemViewerCompound.getScroller
-		throw new UnsupportedOperationException();
+		return scroller;
 	}
 
 	public TopItemUpdater<I, Composite> getTopItemUpdater() {
-		// TODO - implement SwtItemViewerCompound.getTopItemUpdater
-		throw new UnsupportedOperationException();
+		return topItemUpdater;
 	}
 
 }

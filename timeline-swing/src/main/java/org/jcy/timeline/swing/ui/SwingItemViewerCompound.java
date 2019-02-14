@@ -1,13 +1,11 @@
 package org.jcy.timeline.swing.ui;
 
 import org.jcy.timeline.core.model.Item;
-import org.jcy.timeline.core.ui.ItemViewerCompound;
+import org.jcy.timeline.core.ui.*;
+
 import java.awt.Container;
 import org.jcy.timeline.core.model.Timeline;
-import org.jcy.timeline.core.ui.ItemUiFactory;
-import org.jcy.timeline.core.ui.ItemUiList;
-import org.jcy.timeline.core.ui.TopItemScroller;
-import org.jcy.timeline.core.ui.TopItemUpdater;
+import org.jcy.timeline.util.Assertion;
 
 class SwingItemViewerCompound<I extends Item> implements ItemViewerCompound<I, Container> {
 
@@ -16,28 +14,32 @@ class SwingItemViewerCompound<I extends Item> implements ItemViewerCompound<I, C
 	private final SwingTopItemScroller<I> scroller;
 
 	/**
+	 * Build the main data structures about the ui item list used in Swing UI
+	 * with {@param timeline} and {@param itemUiFactory}.
 	 *
-	 * @param timeline
-	 * @param itemUiFactory
+	 * @param timeline timeline
+	 * @param itemUiFactory itemUiFactory
 	 */
 	SwingItemViewerCompound(Timeline<I> timeline, ItemUiFactory<I, Container> itemUiFactory) {
-		// TODO - implement SwingItemViewerCompound.SwingItemViewerCompound
-		throw new UnsupportedOperationException();
+		Assertion.check(timeline != null, "TIMELINE_MUST_NOT_BE_NULL");
+		Assertion.check(itemUiFactory != null, "ITEM_UI_FACTORY_MUST_NOT_BE_NULL");
+
+		ItemUiMap<I, Container> itemUiMap = new ItemUiMap<>(timeline, itemUiFactory);
+		itemUiList = new SwingItemUiList<>(itemUiMap);
+		scroller = new SwingTopItemScroller<>(timeline, itemUiMap, itemUiList);
+		topItemUpdater = new SwingTopItemUpdater<>(timeline, itemUiMap, itemUiList);
 	}
 
 	public ItemUiList<I, Container> getItemUiList() {
-		// TODO - implement SwingItemViewerCompound.getItemUiList
-		throw new UnsupportedOperationException();
+		return itemUiList;
 	}
 
 	public TopItemScroller<I> getScroller() {
-		// TODO - implement SwingItemViewerCompound.getScroller
-		throw new UnsupportedOperationException();
+		return scroller;
 	}
 
 	public TopItemUpdater<I, Container> getTopItemUpdater() {
-		// TODO - implement SwingItemViewerCompound.getTopItemUpdater
-		throw new UnsupportedOperationException();
+		return topItemUpdater;
 	}
 
 }

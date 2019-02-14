@@ -7,12 +7,6 @@ import org.jcy.timeline.core.ui.ItemUi;
 
 public class GitItemUiFactory implements ItemUiFactory<GitItem, Composite> {
 
-	/**
-	 *
-	 * @param uiContext
-	 * @param item
-	 * @param index
-	 */
 	public ItemUi<GitItem> create(Composite uiContext, GitItem item, int index) {
 		// TODO - implement GitItemUiFactory.create
 		throw new UnsupportedOperationException();

@@ -9,55 +9,42 @@ import org.jcy.timeline.core.ui.ItemUiMap;
 import java.awt.Component;
 import org.jcy.timeline.core.ui.ItemUi;
 
+import javax.swing.*;
+
 public class SwingTopItemUpdater<I extends Item> extends TopItemUpdater<I, Container> {
 
 	private final UiThreadDispatcher uiThreadDispatcher;
 	private final SwingItemUiList<I> itemUiList;
 
-	/**
-	 *
-	 * @param timeline
-	 * @param itemUiMap
-	 * @param itemUiList
-	 */
 	SwingTopItemUpdater(Timeline timeline, ItemUiMap<I, Container> itemUiMap, SwingItemUiList<I> itemUiList) {
-		// TODO - implement SwingTopItemUpdater.SwingTopItemUpdater
-		throw new UnsupportedOperationException();
+		this(timeline, itemUiMap, itemUiList, new SwingUiThreadDispatcher());
 	}
 
-	/**
-	 *
-	 * @param timeline
-	 * @param itemUiMap
-	 * @param itemUiList
-	 * @param dispatcher
-	 */
 	SwingTopItemUpdater(Timeline timeline, ItemUiMap<I, Container> itemUiMap, SwingItemUiList<I> itemUiList, UiThreadDispatcher dispatcher) {
-		// TODO - implement SwingTopItemUpdater.SwingTopItemUpdater
-		throw new UnsupportedOperationException();
+		super(timeline, itemUiMap);
+		this.uiThreadDispatcher = dispatcher;
+		this.itemUiList = itemUiList;
 	}
 
-	/**
-	 *
-	 * @param component
-	 */
+	protected boolean isBelowTop(ItemUi<I> itemUi) {
+		Component component = ((SwingItemUi<I>) itemUi).getComponent();
+		if (component.isShowing()) {
+			return isBelowTop(component);
+		}
+		return false;
+	}
+
 	private boolean isBelowTop(Component component) {
-		// TODO - implement SwingTopItemUpdater.isBelowTop
-		throw new UnsupportedOperationException();
+		double y1 = itemUiList.getUiRoot().getLocationOnScreen().getY();
+		double y2 = component.getLocationOnScreen().getY();
+		return y2 - y1 >= 0;
 	}
 
 	protected void register() {
-		// TODO - implement SwingTopItemUpdater.register
-		throw new UnsupportedOperationException();
+		JScrollPane jScrollPane = itemUiList.getUiRoot();
+		BoundedRangeModel model = jScrollPane.getVerticalScrollBar().getModel();
+		uiThreadDispatcher.dispatch(() -> model.addChangeListener(evt -> update()));
 	}
 
-	/**
-	 *
-	 * @param itemUi
-	 */
-	protected boolean isBelowTop(ItemUi<I> itemUi) {
-		// TODO - implement SwingTopItemUpdater.isBelowTop
-		throw new UnsupportedOperationException();
-	}
 
 }

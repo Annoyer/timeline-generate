@@ -1,5 +1,6 @@
 package org.jcy.timeline.swt.ui;
 
+import org.jcy.timeline.util.Assertion;
 import org.jcy.timeline.util.UiThreadDispatcher;
 import org.eclipse.swt.widgets.Display;
 
@@ -8,8 +9,7 @@ public class SwtUiThreadDispatcher implements UiThreadDispatcher {
 	private final Display display;
 
 	public SwtUiThreadDispatcher() {
-		// TODO - implement SwtUiThreadDispatcher.SwtUiThreadDispatcher
-		throw new UnsupportedOperationException();
+		this(Display.getCurrent());
 	}
 
 	/**
@@ -17,8 +17,9 @@ public class SwtUiThreadDispatcher implements UiThreadDispatcher {
 	 * @param display
 	 */
 	public SwtUiThreadDispatcher(Display display) {
-		// TODO - implement SwtUiThreadDispatcher.SwtUiThreadDispatcher
-		throw new UnsupportedOperationException();
+		Assertion.check(display != null, "DISPLAY_MUST_NOT_BE_NULL");
+
+		this.display = display;
 	}
 
 	/**
@@ -26,8 +27,11 @@ public class SwtUiThreadDispatcher implements UiThreadDispatcher {
 	 * @param runnable
 	 */
 	public void dispatch(Runnable runnable) {
-		// TODO - implement SwtUiThreadDispatcher.dispatch
-		throw new UnsupportedOperationException();
+		Assertion.check(runnable != null, "RUNNABLE_MUST_NOT_BE_NULL");
+
+		if (!display.isDisposed()) {
+			display.asyncExec(runnable);
+		}
 	}
 
 }

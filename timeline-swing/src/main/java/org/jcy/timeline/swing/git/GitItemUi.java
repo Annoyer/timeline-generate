@@ -1,93 +1,105 @@
 package org.jcy.timeline.swing.git;
 
 import org.jcy.timeline.swing.ui.SwingItemUi;
+import org.jcy.timeline.core.provider.git.GitItem;
 import org.jcy.timeline.util.NiceTime;
 import javax.swing.JTextArea;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
-import org.jcy.timeline.core.provider.git.GitItem;
-import java.awt.Component;
-import java.awt.GridBagConstraints;
+import java.awt.*;
+import java.util.Date;
 
-class GitItemUi implements SwingItemUi {
+import static org.jcy.timeline.swing.ui.Resources.WHITE;
 
-	private final NiceTime niceTime;
-	private final JTextArea context;
+/**
+ * Git Commit Ui Item in Swing.
+ */
+class GitItemUi implements SwingItemUi<GitItem> {
+
+	/**
+	 * Commit Message.
+	 */
+	private final JTextArea content;
+	/**
+	 * UI Item Context.
+	 */
 	private final JPanel component;
+	/**
+	 * Commit author.
+	 */
 	private final JLabel author;
+	/**
+	 * Commit item info.
+	 */
 	private final GitItem item;
+	/**
+	 * Commit duration time.
+	 */
 	private final JLabel time;
 
-	/**
-	 *
-	 * @param item
-	 */
 	GitItemUi(GitItem item) {
-		// TODO - implement GitItemUi.GitItemUi
-		throw new UnsupportedOperationException();
-	}
-
-	/**
-	 *
-	 * @param item
-	 * @param niceTime
-	 */
-	GitItemUi(GitItem item, NiceTime niceTime) {
-		// TODO - implement GitItemUi.GitItemUi
-		throw new UnsupportedOperationException();
+		this.item = item;
+		this.component = createComponent();
+		this.author = createAuthor(item);
+		this.time = createTime();
+		this.content = createContent(item);
+		layout();
 	}
 
 	String getTime() {
-		// TODO - implement GitItemUi.getTime
-		throw new UnsupportedOperationException();
+		return time.getText();
 	}
 
-	private JLabel createComponent() {
-		// TODO - implement GitItemUi.createComponent
-		throw new UnsupportedOperationException();
+	private JPanel createComponent() {
+		JPanel result = new JPanel();
+		result.setBackground(WHITE);
+		return result;
 	}
 
-	/**
-	 *
-	 * @param item
-	 */
+
 	private JLabel createAuthor(GitItem item) {
-		// TODO - implement GitItemUi.createAuthor
-		throw new UnsupportedOperationException();
+		JLabel result = new JLabel(item.getAuthor());
+		result.setOpaque(true);
+		result.setBackground(WHITE);
+		return result;
 	}
 
 	private JLabel createTime() {
-		// TODO - implement GitItemUi.createTime
-		throw new UnsupportedOperationException();
+		JLabel result = new JLabel(getPrettyTime());
+		result.setOpaque(true);
+		result.setBackground(WHITE);
+		return result;
 	}
 
-	/**
-	 *
-	 * @param item
-	 */
+
 	private JTextArea createContent(GitItem item) {
-		// TODO - implement GitItemUi.createContent
-		throw new UnsupportedOperationException();
+		JTextArea result = new JTextArea(item.getContent());
+		result.setWrapStyleWord(true);
+		result.setLineWrap(true);
+		result.setEditable(false);
+		return result;
 	}
 
 	private void layout() {
-		// TODO - implement GitItemUi.layout
-		throw new UnsupportedOperationException();
+		component.setLayout(new BorderLayout(5, 5));
+		component.add(author, BorderLayout.WEST);
+		component.add(time, BorderLayout.EAST);
+		component.add(content, BorderLayout.SOUTH);
 	}
 
 	private String getPrettyTime() {
-		// TODO - implement GitItemUi.getPrettyTime
-		throw new UnsupportedOperationException();
+		return NiceTime.format(new Date(item.getTimeStamp()));
 	}
 
-	Component getComponent() {
-		// TODO - implement GitItemUi.getComponent
-		throw new UnsupportedOperationException();
+	public Component getComponent() {
+		return component;
 	}
 
-	public static GridBagConstraints createUiItemConstraints() {
-		// TODO - implement GitItemUi.createUiItemConstraints
-		throw new UnsupportedOperationException();
+	/**
+	 * Update the duration time util now of this commit.
+	 */
+	@Override
+	public void update() {
+		time.setText(getPrettyTime());
 	}
-
 }

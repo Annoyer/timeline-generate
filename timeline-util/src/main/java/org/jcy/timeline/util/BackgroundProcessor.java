@@ -1,53 +1,49 @@
 package org.jcy.timeline.util;
 
+import static java.util.concurrent.Executors.defaultThreadFactory;
+
 public class BackgroundProcessor {
 
 	private final UiThreadDispatcher uiThreadDispatcher;
 	private final java.util.concurrent.ThreadFactory threadFactory;
 
-	/**
-	 *
-	 * @param uiThreadDispatcher
-	 */
 	public BackgroundProcessor(UiThreadDispatcher uiThreadDispatcher) {
-		// TODO - implement BackgroundProcessor.BackgroundProcessor
-		throw new UnsupportedOperationException();
+		this.threadFactory = defaultThreadFactory();
+		this.uiThreadDispatcher = uiThreadDispatcher;
 	}
 
 	/**
+	 * Dispatch the task to a new thread.
 	 *
-	 * @param runnable
+	 * @param runnable task.
 	 */
 	public void process(Runnable runnable) {
-		// TODO - implement Iterables.Iterables
-		throw new UnsupportedOperationException();
+		Assertion.check(runnable != null, "RUNNABLE_MUST_NOT_BE_NULL");
+
+		Thread.UncaughtExceptionHandler exceptionHandler = (thread, throwable) -> dispatchToUiThread(throwable);
+		Thread handler = threadFactory.newThread(runnable);
+		handler.setUncaughtExceptionHandler(exceptionHandler);
+		handler.start();
 	}
 
 	/**
+	 * Dispatch the task to the Ui thread.
 	 *
-	 * @param runnable
+	 * @param runnable task.
 	 */
 	public void dispatchToUiThread(Runnable runnable) {
-		// TODO - implement Iterables.Iterables
-		throw new UnsupportedOperationException();
+		uiThreadDispatcher.dispatch(runnable);
 	}
 
-	/**
-	 *
-	 * @param problemOnFetch
-	 */
 	private void dispatchToUiThread(Throwable problemOnFetch) {
-		// TODO - implement Iterables.Iterables
-		throw new UnsupportedOperationException();
+		dispatchToUiThread(() -> rethrow(problemOnFetch));
 	}
 
-	/**
-	 *
-	 * @param problemOnFetch
-	 */
 	private void rethrow(Throwable problemOnFetch) {
-		// TODO - implement Iterables.Iterables
-		throw new UnsupportedOperationException();
+		if (problemOnFetch instanceof Error) {
+			throw (Error) problemOnFetch;
+		}
+		throw (RuntimeException) problemOnFetch;
 	}
 
 }

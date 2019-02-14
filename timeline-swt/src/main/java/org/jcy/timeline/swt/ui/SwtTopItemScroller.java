@@ -1,5 +1,6 @@
 package org.jcy.timeline.swt.ui;
 
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.jcy.timeline.core.model.Item;
 import org.jcy.timeline.core.ui.TopItemScroller;
 import org.jcy.timeline.util.UiThreadDispatcher;
@@ -23,8 +24,7 @@ public class SwtTopItemScroller<I extends Item> implements TopItemScroller<I> {
 	 * @param itemUiList
 	 */
 	SwtTopItemScroller(Timeline<I> timeline, ItemUiMap<I, Composite> itemUiMap, SwtItemUiList<I> itemUiList) {
-		// TODO - implement SwtTopItemScroller.SwtTopItemScroller
-		throw new UnsupportedOperationException();
+		this(timeline, itemUiMap, itemUiList, new SwtUiThreadDispatcher());
 	}
 
 	/**
@@ -35,13 +35,26 @@ public class SwtTopItemScroller<I extends Item> implements TopItemScroller<I> {
 	 * @param dispatcher
 	 */
 	SwtTopItemScroller(Timeline<I> timeline, ItemUiMap<I, Composite> itemUiMap, SwtItemUiList<I> itemUiList, UiThreadDispatcher dispatcher) {
-		// TODO - implement SwtTopItemScroller.SwtTopItemScroller
-		throw new UnsupportedOperationException();
+		this.uiThreadDispatcher = dispatcher;
+		this.itemUiList = itemUiList;
+		this.itemUiMap = itemUiMap;
+		this.timeline = timeline;
+	}
+
+	public void scrollIntoView() {
+		uiThreadDispatcher.dispatch(() -> doScrollIntoView());
 	}
 
 	public void doScrollIntoView() {
-		// TODO - implement SwtTopItemScroller.doScrollIntoView
-		throw new UnsupportedOperationException();
+		if (timeline.getTopItem().isPresent()) {
+			SwtItemUi<I> itemUi = getItemUi();
+			if (itemUi != null) {
+				Control control = itemUi.getControl();
+				if (control.isVisible()) {
+					updateVerticalScrollbarSelection(control);
+				}
+			}
+		}
 	}
 
 	/**
@@ -49,13 +62,13 @@ public class SwtTopItemScroller<I extends Item> implements TopItemScroller<I> {
 	 * @param newValue
 	 */
 	void setScrollbarSelection(int newValue) {
-		// TODO - implement SwtTopItemScroller.setScrollbarSelection
-		throw new UnsupportedOperationException();
+		getContent().getVerticalBar().setSelection(newValue);
+		((ScrolledComposite) getContent()).setOrigin(0, newValue);
 	}
 
 	private SwtItemUi<I> getItemUi() {
-		// TODO - implement SwtTopItemScroller.getItemUi
-		throw new UnsupportedOperationException();
+		I item = timeline.getTopItem().get();
+		return (SwtItemUi<I>) itemUiMap.findByItemId(item.getId());
 	}
 
 	/**
@@ -63,8 +76,10 @@ public class SwtTopItemScroller<I extends Item> implements TopItemScroller<I> {
 	 * @param control
 	 */
 	private void updateVerticalScrollbarSelection(Control control) {
-		// TODO - implement SwtTopItemScroller.updateVerticalScrollbarSelection
-		throw new UnsupportedOperationException();
+		int verticalPosition = computeVerticalPosition(control);
+		if (verticalPosition > TOP_POSITION) {
+			updateVerticalScrollbarSelection(verticalPosition);
+		}
 	}
 
 	/**
@@ -72,8 +87,8 @@ public class SwtTopItemScroller<I extends Item> implements TopItemScroller<I> {
 	 * @param verticalPosition
 	 */
 	private void updateVerticalScrollbarSelection(int verticalPosition) {
-		// TODO - implement SwtTopItemScroller.updateVerticalScrollbarSelection
-		throw new UnsupportedOperationException();
+		int oldValue = getContent().getVerticalBar().getSelection();
+		setScrollbarSelection(oldValue - TOP_POSITION + verticalPosition);
 	}
 
 	/**
@@ -81,18 +96,12 @@ public class SwtTopItemScroller<I extends Item> implements TopItemScroller<I> {
 	 * @param control
 	 */
 	private int computeVerticalPosition(Control control) {
-		// TODO - implement SwtTopItemScroller.computeVerticalPosition
-		throw new UnsupportedOperationException();
+		Composite root = itemUiList.getUiRoot();
+		return control.getDisplay().map(control.getParent(), root, control.getLocation()).y;
 	}
 
 	private Composite getContent() {
-		// TODO - implement SwtTopItemScroller.getContent
-		throw new UnsupportedOperationException();
-	}
-
-	public void scrollIntoView() {
-		// TODO - implement SwtTopItemScroller.scrollIntoView
-		throw new UnsupportedOperationException();
+		return itemUiList.getUiRoot();
 	}
 
 }
