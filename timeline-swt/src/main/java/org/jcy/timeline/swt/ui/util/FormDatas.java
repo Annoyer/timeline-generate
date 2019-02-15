@@ -188,8 +188,7 @@ public class FormDatas {
 	 * @param margin the offset of the side from the control
 	 */
 	public FormDatas atTopTo(Control control, int margin) {
-		// TODO - implement FormDatas.atTopTo
-		throw new UnsupportedOperationException();
+		return atTopTo(control, margin, SWT.DEFAULT);
 	}
 
 	/**
@@ -200,8 +199,8 @@ public class FormDatas {
 	 * @param alignment the alignment of the side to the control it is attached to
 	 */
 	public FormDatas atTopTo(Control control, int margin, int alignment) {
-		// TODO - implement FormDatas.atTopTo
-		throw new UnsupportedOperationException();
+		formData.top = new FormAttachment(control, margin, alignment);
+		return this;
 	}
 
 	/**

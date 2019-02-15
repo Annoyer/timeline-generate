@@ -45,16 +45,15 @@ class SwtAutoUpdate<I extends Item> implements AutoUpdate<I, Composite> {
 	 * Start auto update.
 	 */
 	public void start() {
-		// TODO - implement SwtAutoUpdate.start
-		throw new UnsupportedOperationException();
+		started = true;
+		display.timerExec(delay, () -> triggerUpdate());
 	}
 
 	/**
 	 * Stop auto update.
 	 */
 	public void stop() {
-		// TODO - implement SwtAutoUpdate.stop
-		throw new UnsupportedOperationException();
+		started=false;
 	}
 
 }

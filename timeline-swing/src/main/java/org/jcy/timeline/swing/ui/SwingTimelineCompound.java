@@ -18,8 +18,7 @@ public class SwingTimelineCompound<I extends Item> {
 	private final Header<I> header;
 
 	static BackgroundProcessor createBackgroundProcessor() {
-		// TODO - implement SwingTimelineCompound.createBackgroundProcessor
-		throw new UnsupportedOperationException();
+		return new BackgroundProcessor(new SwingUiThreadDispatcher());
 	}
 
 	/**
