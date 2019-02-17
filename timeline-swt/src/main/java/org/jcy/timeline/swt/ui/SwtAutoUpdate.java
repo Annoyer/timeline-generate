@@ -8,7 +8,7 @@ import org.jcy.timeline.util.Assertion;
 
 import org.jcy.timeline.core.ui.AutoUpdate;
 
-class SwtAutoUpdate<I extends Item> implements AutoUpdate<I, Composite> {
+class SwtAutoUpdate<I extends Item> implements AutoUpdate {
 
 	private final ItemViewer<I, Composite> itemViewer;
 	private final Header<I> header;

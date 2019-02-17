@@ -1,14 +1,13 @@
 package org.jcy.timeline.core.ui;
 
-import org.jcy.timeline.core.model.Item;
 
 /**
  * Auto update the ui.
  *
- * @param <I>
- * @param <U>
+ * Optimize: Remove useless template types.
+ *
  */
-public interface AutoUpdate<I extends Item, U> {
+public interface AutoUpdate {
 
 	/**
 	 * Start auto update.

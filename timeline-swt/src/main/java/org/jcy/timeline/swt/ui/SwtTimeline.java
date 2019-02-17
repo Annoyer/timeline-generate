@@ -15,7 +15,7 @@ import org.jcy.timeline.swt.ui.util.FormDatas;
 public class SwtTimeline<I extends Item> {
 
 	private final ItemViewer<I, Composite> itemViewer;
-	private final AutoUpdate<I, Composite> autoUpdate;
+	private final AutoUpdate autoUpdate;
 	private final Header<I> header;
 	private final Composite control;
 

@@ -15,7 +15,7 @@ import javax.swing.JPanel;
 public class SwingTimeline<I extends Item> {
 
 	private final ItemViewer<I, Container> itemViewer;
-	private final AutoUpdate<I, Container> autoUpdate;
+	private final AutoUpdate autoUpdate;
 	private final Header<I> header;
 	private final JPanel component;
 

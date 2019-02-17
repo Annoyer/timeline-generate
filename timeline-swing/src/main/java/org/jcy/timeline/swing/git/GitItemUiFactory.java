@@ -21,6 +21,7 @@ public class GitItemUiFactory implements ItemUiFactory<GitItem, Container> {
 		Assertion.check(item != null, "ITEM_MUST_NOT_BE_NULL");
 		Assertion.check(index >= 0, "INDEX_MUST_NOT_BE_NEGATIVE");
 
+		// 创建的同时，就展示了这个commit item。
 		GitItemUi result = new GitItemUi(item);
 		uiContext.add(result.getComponent(), createUiItemConstraints(), index);
 		return result;

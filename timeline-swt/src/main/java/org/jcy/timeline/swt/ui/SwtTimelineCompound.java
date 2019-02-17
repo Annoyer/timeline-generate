@@ -46,7 +46,7 @@ class SwtTimelineCompound<I extends Item> {
 		return this.header;
 	}
 
-	AutoUpdate<I, Composite> getAutoUpdate() {
+	AutoUpdate getAutoUpdate() {
 		return autoUpdate;
 	}
 

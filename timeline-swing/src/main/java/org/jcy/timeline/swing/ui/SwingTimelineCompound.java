@@ -14,7 +14,7 @@ import org.jcy.timeline.core.model.SessionStorage;
 public class SwingTimelineCompound<I extends Item> {
 
 	private final ItemViewer<I, Container> itemViewer;
-	private final AutoUpdate<I, Container> autoUpdate;
+	private final AutoUpdate autoUpdate;
 	private final Header<I> header;
 
 	static BackgroundProcessor createBackgroundProcessor() {
@@ -47,7 +47,7 @@ public class SwingTimelineCompound<I extends Item> {
 		return this.header;
 	}
 
-	AutoUpdate<I, Container> getAutoUpdate() {
+	AutoUpdate getAutoUpdate() {
 		return this.autoUpdate;
 	}
 

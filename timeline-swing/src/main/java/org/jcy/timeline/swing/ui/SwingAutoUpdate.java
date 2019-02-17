@@ -8,7 +8,7 @@ import java.awt.Container;
 import org.jcy.timeline.core.ui.AutoUpdate;
 import org.jcy.timeline.util.Assertion;
 
-public class SwingAutoUpdate<I extends Item> implements AutoUpdate<I, Container> {
+public class SwingAutoUpdate<I extends Item> implements AutoUpdate {
 
 	private final ActionListener itemViewerNotifier;
 	private final ActionListener headerNofifier;
