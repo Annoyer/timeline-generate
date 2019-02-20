@@ -41,7 +41,8 @@ public class WebSocketEventListener {
             } else {
                 log.info("[ws] already unregistered: {}", principal.getName());
             }
+        } else {
+            log.warn("[ws] Fail to unregister since principal is NULL!");
         }
-        log.warn("[ws] Fail to unregister since principal is NULL!");
     }
 }

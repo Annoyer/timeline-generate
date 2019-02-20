@@ -9,7 +9,6 @@ import org.jcy.timeline.web.util.MessageUtils;
 import java.util.Timer;
 import java.util.TimerTask;
 
-// todo remove Object
 public class WebAutoUpdate implements AutoUpdate {
 
     private static final int AUTO_UPDATE_INTERVAL = 5000;

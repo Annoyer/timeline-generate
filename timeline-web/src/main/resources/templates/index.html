@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js">
+    </script>
+    <script src="https://cdn.bootcss.com/sockjs-client/1.3.0/sockjs.min.js"></script>
+    <script src="https://cdn.bootcss.com/stomp.js/2.3.3/stomp.min.js"></script>
+    <title>Timeline</title>
+</head>
+
+<body>
+<div>
+    <label for="uri">uri: </label>
+    <input type="text" id="uri" value="https://github.com/Annoyer/jenkins-web-test.git"/>
+</div>
+<div>
+    <label for="projectName">projectName: </label>
+    <input type="text" id="projectName" value="jenkins-web-test"/>
+</div>
+
+<button id="connectBtn">connect</button>
+
+<button id="more">more</button>
+
+<button id="new" disabled="disabled">new</button>
+
+</body>
+<script type="text/javascript" th:inline="javascript">
+
+    var id = null;
+
+    $("#connectBtn").click(function() {
+        var uri = $("#uri").val();
+        var projectName = $("#projectName").val();
+        $.ajax({
+            url: "/timeline/register",
+            data: {
+                uri : uri,
+                projectName : projectName
+            },
+            dataType: "json",
+            success: function(data){
+                if (data.success) {
+                    showItems(data.items)
+                    id = data.id;
+                    connect();
+                } else {
+                    console.error(data.cause);
+                }
+            },
+            error: function(data) {
+                console.error(data);
+            }
+        });
+    });
+
+    function connect() {
+        var socket = new SockJS('/timeline/timeline-ws');
+        var client = Stomp.over(socket);
+
+        client.connect({
+            sessionId: id
+        }, function (succ) {
+            console.log('client[sessionId=%s] connect success: %s', id, succ);
+
+            client.subscribe("/user/unicast/autoUpdate", function(message) {
+                var obj = JSON.parse(message.body);
+                showItems(obj.items);
+                if (obj.newCount > 0) {
+                    $("#new").text(obj.newCount + "new");
+                    $("#new").prop("disabled", false);
+                }
+            });
+
+            client.send("/msg/startAutoUpdate", {}, "");
+            console.log('start update.')
+        }, function (error) {
+            console.log('client[sessionId=%s] connect error: %s', id, error);
+        });
+    }
+    
+    $("#more").click(function() {
+        $.ajax({
+            url: "/timeline/more",
+            data: {
+                id : id
+            },
+            dataType: "json",
+            success: function(data){
+                showItems(data.items);
+            },
+            error: function(data) {
+                console.error(data);
+            }
+        });
+    });
+
+    $("#new").click(function() {
+        $("#new").prop("disabled", true);
+        $.ajax({
+            url: "/timeline/new",
+            data: {
+                id : id
+            },
+            dataType: "json",
+            success: function(data){
+                showItems(data.items);
+            },
+            error: function(data) {
+                console.error(data);
+            }
+        });
+    });
+
+    function showItems(message) {
+        console.log(message);
+    }
+
+</script>
+</html>

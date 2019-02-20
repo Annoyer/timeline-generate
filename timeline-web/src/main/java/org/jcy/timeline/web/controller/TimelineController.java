@@ -52,7 +52,7 @@ public class TimelineController {
 	@RequestMapping("/new")
 	@ResponseBody
 	public FetchResponse fetchNew(FetchRequest request) {
-		return timelineService.fetchNew(request.getSessionId());
+		return timelineService.fetchNew(request.getId());
 	}
 
 	/**
@@ -62,7 +62,7 @@ public class TimelineController {
 	@RequestMapping("/more")
 	@ResponseBody
 	public FetchResponse fetchMore(FetchRequest request) {
-		return timelineService.fetchMore(request.getSessionId());
+		return timelineService.fetchMore(request.getId());
 	}
 
 }
