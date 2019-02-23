@@ -26,8 +26,8 @@ class SwingItemViewerCompound<I extends Item> implements ItemViewerCompound<I, C
 
 		ItemUiMap<I, Container> itemUiMap = new ItemUiMap<>(timeline, itemUiFactory);
 		itemUiList = new SwingItemUiList<>(itemUiMap);
-		scroller = new SwingTopItemScroller<>(timeline, itemUiMap, itemUiList);
-		topItemUpdater = new SwingTopItemUpdater<>(timeline, itemUiMap, itemUiList);
+		scroller = new SwingTopItemScroller<>(timeline, itemUiMap, (SwingItemUiList<I>) this.getItemUiList());
+		topItemUpdater = new SwingTopItemUpdater<>(timeline, itemUiMap, (SwingItemUiList<I>) this.getItemUiList());
 	}
 
 	public ItemUiList<I, Container> getItemUiList() {

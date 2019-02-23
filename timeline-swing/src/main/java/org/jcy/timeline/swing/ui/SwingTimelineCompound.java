@@ -28,15 +28,19 @@ public class SwingTimelineCompound<I extends Item> {
 	 * @param itemUiFactory itemUiFactory
 	 * @param sessionStorage sessionStorage
 	 */
-	SwingTimelineCompound(ItemProvider<I> itemProvider, ItemUiFactory<I, Container> itemUiFactory, SessionStorage<I> sessionStorage) {
+	public SwingTimelineCompound(ItemProvider<I> itemProvider, ItemUiFactory<I, Container> itemUiFactory, SessionStorage<I> sessionStorage) {
 		Assertion.check(itemProvider != null, "ITEM_PROVIDER_MUST_NOT_BE_NULL");
 		Assertion.check(itemUiFactory != null, "ITEM_UI_FACTORY_MUST_NOT_BE_NULL");
 		Assertion.check(sessionStorage != null, "SESSION_STORAGE_MUST_NOT_BE_NULL");
 
 		Timeline<I> timeline = new Timeline<>(itemProvider, sessionStorage);
-		itemViewer = new ItemViewer<>(new SwingItemViewerCompound<>(timeline, itemUiFactory));
+		itemViewer = new ItemViewer<>(this.createItemViewerCompound(timeline, itemUiFactory));
 		header = new Header<>(timeline);
-		autoUpdate = new SwingAutoUpdate<>(header, itemViewer, 5_000);
+		autoUpdate = new SwingAutoUpdate<>(this.getHeader(), this.getItemViewer(), 5_000);
+	}
+
+	SwingItemViewerCompound<I> createItemViewerCompound(Timeline<I> timeline, ItemUiFactory<I, Container> itemUiFactory) {
+		return new SwingItemViewerCompound<>(timeline, itemUiFactory);
 	}
 
 	ItemViewer<I, Container> getItemViewer() {

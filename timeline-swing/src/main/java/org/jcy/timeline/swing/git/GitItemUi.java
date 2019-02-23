@@ -46,10 +46,6 @@ class GitItemUi implements SwingItemUi<GitItem> {
 		layout();
 	}
 
-	String getTime() {
-		return time.getText();
-	}
-
 	private JPanel createComponent() {
 		JPanel result = new JPanel();
 		result.setBackground(WHITE);

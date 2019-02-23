@@ -12,7 +12,7 @@ import java.awt.*;
 
 import org.jcy.timeline.util.BackgroundProcessor;
 
-class SwingItemUiList<I extends Item> extends ItemUiList<I, Container> {
+public class SwingItemUiList<I extends Item> extends ItemUiList<I, Container> {
 
 	JScrollPane uiRoot;
 	JButton fetchMore;

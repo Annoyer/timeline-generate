@@ -18,7 +18,7 @@ import org.jcy.timeline.swing.ui.SwingTimelineCompound;
  *
  * @param <I>
  */
-class Header<I extends Item> {
+public class Header<I extends Item> {
 
 	static final String TITLE = "Timeline";
 	private final BackgroundProcessor backgroundProcessor;
@@ -54,7 +54,7 @@ class Header<I extends Item> {
 	/**
 	 * Update the 'new commit count' in header.
 	 */
-	void update() {
+	public void update() {
 		backgroundProcessor.process(() -> {
 			int count = timeline.getNewCount();
 			backgroundProcessor.dispatchToUiThread(() -> update(count));
@@ -74,7 +74,7 @@ class Header<I extends Item> {
 		return this.component;
 	}
 
-	String getTitle() {
+	public String getTitle() {
 		return title.getText();
 	}
 

@@ -1,6 +1,8 @@
 package org.jcy.timeline.core.model;
 
 import nz.ac.waikato.modeljunit.*;
+import nz.ac.waikato.modeljunit.coverage.ActionCoverage;
+import nz.ac.waikato.modeljunit.coverage.StateCoverage;
 import nz.ac.waikato.modeljunit.coverage.TransitionCoverage;
 import org.junit.Assert;
 
@@ -14,9 +16,11 @@ public class FsmItemTest implements FsmModel {
 
     private int A_MINUS_B;
 
+    private EqualsTester<FakeItem> equalsTester;
+
     public FsmItemTest() {
         itemA = new FakeItem("A", 1000);
-        System.out.println("ItemA: " + itemA.toString());
+        equalsTester = EqualsTester.newInstance(itemA);
     }
 
     @Override
@@ -40,22 +44,20 @@ public class FsmItemTest implements FsmModel {
         A_MINUS_B = 0;
     }
 
-//    @Action
-//    public void sameObject() {
-//        itemB = itemA;
-//        doCompare();
-//        Assert.assertEquals(0, A_MINUS_B);
-//        Assert.assertSame(itemA, itemB);
-//        Assert.assertEquals(itemA, itemB);
-//    }
+    @Action
+    public void sameObject() {
+        itemB = itemA;
+        doCompare();
+        Assert.assertEquals(0, A_MINUS_B);
+        equalsTester.assertEqual(itemA, itemB);
+    }
 
     @Action
     public void idEqualsTimestampEquals() {
         itemB = new FakeItem(itemA.getId(), itemA.getTimeStamp());
         doCompare();
         Assert.assertEquals(0, A_MINUS_B);
-        Assert.assertNotSame(itemA, itemB);
-        Assert.assertEquals(itemA, itemB);
+        equalsTester.assertEqual(itemA, itemB);
     }
     
 
@@ -168,7 +170,6 @@ public class FsmItemTest implements FsmModel {
     }
 
     private void doCompare() {
-        System.out.println("current B = " + itemB.toString());
         A_MINUS_B = itemA.compareTo(itemB);
     }
 
@@ -176,7 +177,10 @@ public class FsmItemTest implements FsmModel {
         FsmItemTest test = new FsmItemTest();
         Tester tester = new GreedyTester(test);
         tester.addListener(new VerboseListener());
+        tester.addListener(new StopOnFailureListener());
         tester.addCoverageMetric(new TransitionCoverage());
+        tester.addCoverageMetric(new ActionCoverage());
+        tester.addCoverageMetric(new StateCoverage());
         tester.generate(50);
         tester.printCoverage();
 

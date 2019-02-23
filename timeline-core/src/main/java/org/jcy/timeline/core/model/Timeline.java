@@ -3,6 +3,7 @@ package org.jcy.timeline.core.model;
 import org.jcy.timeline.util.Assertion;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Timeline.
@@ -43,7 +44,7 @@ public class Timeline<I extends Item> {
 
 		this.itemProvider = itemProvider;
 		this.sessionStorage = sessionStorage;
-		this.items = new ArrayList<>();
+		this.items = new CopyOnWriteArrayList<>();
 
 		// 每次只拉10条
 		this.fetchCount = DEFAULT_FETCH_COUNT;
@@ -144,7 +145,7 @@ public class Timeline<I extends Item> {
 	 *
 	 * @param additionalItems items to be added.
 	 */
-	private void addSorted(List<I> additionalItems) {
+	private synchronized void addSorted(List<I> additionalItems) {
 		items.addAll(additionalItems);
 		Collections.sort(items, (first, second) -> Long.compare(second.getTimeStamp(), first.getTimeStamp()));
 	}

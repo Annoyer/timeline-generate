@@ -6,9 +6,6 @@ import org.jcy.timeline.core.ui.ItemViewer;
 import java.awt.*;
 
 import org.jcy.timeline.core.ui.AutoUpdate;
-import org.jcy.timeline.core.model.ItemProvider;
-import org.jcy.timeline.core.ui.ItemUiFactory;
-import org.jcy.timeline.core.model.SessionStorage;
 
 import javax.swing.JPanel;
 
@@ -19,11 +16,7 @@ public class SwingTimeline<I extends Item> {
 	private final Header<I> header;
 	private final JPanel component;
 
-	public SwingTimeline(ItemProvider<I> itemProvider, ItemUiFactory<I, Container> itemUiFactory, SessionStorage<I> sessionStorage) {
-		this(new SwingTimelineCompound<>(itemProvider, itemUiFactory, sessionStorage));
-	}
-
-	SwingTimeline(SwingTimelineCompound<I> compound) {
+	public SwingTimeline(SwingTimelineCompound<I> compound) {
 		itemViewer = compound.getItemViewer();
 		header = compound.getHeader();
 		autoUpdate = compound.getAutoUpdate();
@@ -38,9 +31,9 @@ public class SwingTimeline<I extends Item> {
 		autoUpdate.start();
 	}
 
-	public void stopAutoRefresh() {
-		autoUpdate.stop();
-	}
+    public void stopAutoRefresh() {
+        autoUpdate.stop();
+    }
 
 	public void setTitle(String title) {
 		header.setTitle(title);

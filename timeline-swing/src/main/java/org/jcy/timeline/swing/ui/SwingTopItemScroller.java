@@ -47,7 +47,7 @@ public class SwingTopItemScroller<I extends Item> implements TopItemScroller {
 		}
 	}
 
-	void setScrollbarSelection(int newValue) {
+	public void setScrollbarSelection(int newValue) {
 		getContentPane().getVerticalScrollBar().getModel().setValue(newValue);
 	}
 
