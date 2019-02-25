@@ -6,8 +6,7 @@ import org.jcy.timeline.core.model.SessionStorage;
 import org.jcy.timeline.core.model.Timeline;
 import org.jcy.timeline.core.provider.git.GitItem;
 import org.jcy.timeline.core.ui.*;
-import org.jcy.timeline.swing.GitTimelineFactoryTest;
-import org.jcy.timeline.swing.ItemViewerProxy;
+import org.jcy.timeline.swing.SwingUIUpdateListener;
 import org.mockito.Mockito;
 
 import javax.swing.*;
@@ -17,9 +16,10 @@ public class MockSwingTimelineCompound extends SwingTimelineCompound<GitItem> {
 
     private ItemViewerProxy<GitItem, Container> proxyItemViewer;
 
-    private Header<GitItem> spyHeader;
+    private HeaderProxy<GitItem> spyHeader;
 
-    private SwingItemViewerCompound<GitItem> actualViewerCompound;
+
+    private SwingUIUpdateListener<GitItem, Container> updateListener;
 
     public MockSwingTimelineCompound(ItemProvider<GitItem> itemProvider, ItemUiFactory<GitItem, Container> uiFactory, SessionStorage<GitItem> sessionStorage) {
         super(itemProvider, uiFactory, sessionStorage);
@@ -27,14 +27,17 @@ public class MockSwingTimelineCompound extends SwingTimelineCompound<GitItem> {
 
     @Override
     SwingItemViewerCompound<GitItem> createItemViewerCompound(Timeline<GitItem> timeline, ItemUiFactory<GitItem, Container> itemUiFactory) {
-        actualViewerCompound = super.createItemViewerCompound(timeline, itemUiFactory);
-        return new MockSwingItemViewerCompound<>(timeline, itemUiFactory);
+        return new MockSwingItemViewerCompound<>(timeline, itemUiFactory, super.createItemViewerCompound(timeline, itemUiFactory));
     }
 
     @Override
-    public ItemViewer<GitItem, Container> getItemViewer() {
+    public synchronized ItemViewer<GitItem, Container> getItemViewer() {
         if (proxyItemViewer == null) {
-            proxyItemViewer = Mockito.spy(new ItemViewerProxy<>(super.getItemViewer(), GitTimelineFactoryTest.getInstance()));
+            proxyItemViewer = Mockito.spy(new ItemViewerProxy<>(super.getItemViewer()));
+            if (updateListener == null) {
+                updateListener = new SwingUIUpdateListener<>(2);
+            }
+            updateListener.register(proxyItemViewer);
         }
         return proxyItemViewer;
     }
@@ -45,9 +48,13 @@ public class MockSwingTimelineCompound extends SwingTimelineCompound<GitItem> {
     }
 
     @Override
-    public Header<GitItem> getHeader() {
+    public synchronized Header<GitItem> getHeader() {
         if (spyHeader == null) {
-            spyHeader = Mockito.spy(super.getHeader());
+            spyHeader = Mockito.spy(new HeaderProxy<>(super.getHeader()));
+            if (updateListener == null) {
+                updateListener = new SwingUIUpdateListener<>(2);
+            }
+            updateListener.register(spyHeader);
         }
         return spyHeader;
     }
@@ -95,12 +102,15 @@ public class MockSwingTimelineCompound extends SwingTimelineCompound<GitItem> {
 
     private class MockSwingItemViewerCompound<I extends Item> extends SwingItemViewerCompound<I> {
 
+        private SwingItemViewerCompound<I> actual;
+
         private SwingItemUiList<I> spyItemUiList;
         private SwingTopItemUpdater<I> spyTopItemUpdater;
         private SwingTopItemScroller<I> spyScroller;
 
-        MockSwingItemViewerCompound(Timeline<I> timeline, ItemUiFactory<I, Container> itemUiFactory) {
+        MockSwingItemViewerCompound(Timeline<I> timeline, ItemUiFactory<I, Container> itemUiFactory, SwingItemViewerCompound<I> actual) {
             super(timeline, itemUiFactory);
+            this.actual = actual;
         }
 
         @Override

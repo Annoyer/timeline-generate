@@ -11,8 +11,6 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-import org.jcy.timeline.swing.ui.SwingTimelineCompound;
-
 /**
  * Application Header.
  *
@@ -32,7 +30,7 @@ public class Header<I extends Item> {
 	 *
 	 * @param timeline timeline.
 	 */
-	Header(Timeline<I> timeline) {
+	protected Header(Timeline<I> timeline) {
 		this(timeline, SwingTimelineCompound.createBackgroundProcessor());
 	}
 
@@ -89,7 +87,7 @@ public class Header<I extends Item> {
 	 *
 	 * @param count the count of new commits.
 	 */
-	private void update(int count) {
+	protected void update(int count) {
 		fetchNew.setText(count + " new");
 		fetchNew.setVisible(count > 0);
 	}

@@ -1,15 +1,14 @@
-package org.jcy.timeline.swing;
+package org.jcy.timeline.swing.ui;
 
 import org.jcy.timeline.core.model.Item;
 import org.jcy.timeline.core.ui.*;
+import org.jcy.timeline.swing.SwingUIUpdateListener;
+import org.jcy.timeline.swing.TestUtil;
 import org.mockito.Mockito;
-
-import static org.jcy.timeline.swing.TimelineStateMachine.State.RUNNING_TIME_WAITING;
-import static org.jcy.timeline.swing.TimelineStateMachine.State.RUNNING_UPDATING;
 
 public class ItemViewerProxy<I extends Item, U> extends ItemViewer<I, U> {
 
-    private final GitTimelineFactoryTest test;
+    private SwingUIUpdateListener listener;
 
     private final ItemViewer<I, U> actual;
 
@@ -17,20 +16,30 @@ public class ItemViewerProxy<I extends Item, U> extends ItemViewer<I, U> {
     private final TopItemScroller<I> actualScroller;
     private final TopItemUpdater<I, U> actualTopItemUpdater;
 
-    public ItemViewerProxy(ItemViewer<I, U> actual, GitTimelineFactoryTest test) {
+    public ItemViewerProxy(ItemViewer<I, U> actual) {
         super(new NullItemViewerCompound());
         this.actual = actual;
-        this.test = test;
         this.actualItemUiList = (ItemUiList<I, U>) TestUtil.findFieldValue("itemUiList", actual);
         this.actualScroller = (TopItemScroller<I>) TestUtil.findFieldValue("scroller", actual);
         this.actualTopItemUpdater = (TopItemUpdater<I, U>) TestUtil.findFieldValue("topItemUpdater", actual);
     }
 
+    public void addUpdateListener(SwingUIUpdateListener listener) {
+        this.listener = listener;
+    }
+
     @Override
     public void update() {
-        if (test.state.setIfMatch(RUNNING_UPDATING, RUNNING_TIME_WAITING)) {
+        if (listener == null || listener.canUpdate()) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                // swallow
+            }
             actual.update();
-            test.state.setState(RUNNING_TIME_WAITING);
+            if (listener != null) {
+                listener.updateCompleted();
+            }
         }
     }
 

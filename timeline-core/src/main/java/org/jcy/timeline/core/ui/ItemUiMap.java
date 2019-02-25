@@ -52,7 +52,6 @@ public class ItemUiMap<I extends Item, U> {
 	 */
 	public ItemUi<I> findByItemId(String id) {
 		Assertion.check(id != null, "ID_MUST_NOT_BE_NULL");
-		Assertion.check(containsItemUi(id), "UNKNOWN_ITEM_UI_ENTRY", id);
 
 		return itemUis.get(id);
 	}
