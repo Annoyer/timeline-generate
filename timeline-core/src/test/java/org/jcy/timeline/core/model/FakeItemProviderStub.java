@@ -1,9 +1,6 @@
 package org.jcy.timeline.core.model;
 
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
@@ -33,6 +30,9 @@ class FakeItemProviderStub implements ItemProvider<FakeItem> {
 
     @Override
     public List<FakeItem> fetchNew(FakeItem predecessor) {
+        if (predecessor == null) {
+            return new ArrayList<>(items);
+        }
         return items
                 .stream()
                 .sorted(descending())

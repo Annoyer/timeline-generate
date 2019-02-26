@@ -8,7 +8,7 @@ import static org.jcy.timeline.swing.TimelineStateMachine.MainState.RUNNING;
 
 public class SwingUIUpdateListener<I extends Item, U> {
 
-    private final TimelineSwingFsmTest TEST = TimelineSwingFsmTest.getInstance();
+    private final TimelineSwingFsm TEST = TimelineSwingFsm.getInstance();
 
     private final int COMPONENT_COUNT;
 

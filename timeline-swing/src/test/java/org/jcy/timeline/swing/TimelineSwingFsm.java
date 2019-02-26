@@ -1,11 +1,6 @@
 package org.jcy.timeline.swing;
 
 import nz.ac.waikato.modeljunit.Action;
-import nz.ac.waikato.modeljunit.*;
-import nz.ac.waikato.modeljunit.coverage.ActionCoverage;
-import nz.ac.waikato.modeljunit.coverage.StateCoverage;
-import nz.ac.waikato.modeljunit.coverage.TransitionCoverage;
-import nz.ac.waikato.modeljunit.coverage.TransitionPairCoverage;
 import nz.ac.waikato.modeljunit.timing.Time;
 import nz.ac.waikato.modeljunit.timing.TimedFsmModel;
 import nz.ac.waikato.modeljunit.timing.Timeout;
@@ -35,17 +30,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.jcy.timeline.swing.TimelineStateMachine.MainState.*;
 import static org.mockito.Mockito.*;
 
-public class TimelineSwingFsmTest implements TimedFsmModel {
+public class TimelineSwingFsm implements TimedFsmModel {
 
-    private static TimelineSwingFsmTest INSTANCE = new TimelineSwingFsmTest();
+    private static TimelineSwingFsm INSTANCE = new TimelineSwingFsm();
 
-    public static TimelineSwingFsmTest getInstance() {
+    public static TimelineSwingFsm getInstance() {
         return INSTANCE;
     }
 
-    private static final Logger log = LoggerFactory.getLogger(TimelineSwingFsmTest.class);
+    private static final Logger log = LoggerFactory.getLogger(TimelineSwingFsm.class);
 
-    static final File BASE_DIRECTORY = new File(TimelineSwingFsmTest.class.getResource("/").getPath());
+    static final File BASE_DIRECTORY = new File(TimelineSwingFsm.class.getResource("/").getPath());
     static final String URI = "https://github.com/Annoyer/jenkins-web-test.git";
     static final String REPOSITORY_NAME = "jenkins-web-test";
     private static final FileStorageStructure storageStructure = new FileStorageStructure(BASE_DIRECTORY);
@@ -104,7 +99,7 @@ public class TimelineSwingFsmTest implements TimedFsmModel {
         TIME_PASSED.start();
     }
 
-    private TimelineSwingFsmTest() {
+    private TimelineSwingFsm() {
     }
 
     @Override
@@ -209,14 +204,14 @@ public class TimelineSwingFsmTest implements TimedFsmModel {
         Header spyHeader = timelineFactoryCreator.getTimelineCompound().spyHeader();
 
         swingTimeline.startAutoRefresh();
-//
+
         try {
             Thread.sleep(5500);
         } catch (InterruptedException e) {
             // swallow
         }
-//        Mockito.verify(spyHeader).update();
-//        Mockito.verify(spyItemViewer).update();
+        Mockito.verify(spyHeader).update();
+        Mockito.verify(spyItemViewer).update();
         while (state.isUpdating());
         if (state.isBtnNewVisible()) {
             fetchNew();
@@ -287,22 +282,6 @@ public class TimelineSwingFsmTest implements TimedFsmModel {
         return timelineFactoryCreator != null
                 && timelineFactoryCreator.getTimelineCompound() != null
                 && timelineFactoryCreator.getTimelineCompound().getFetchMoreButton().isVisible();
-    }
-
-    public static void main(String[] args) throws IOException {
-        TimelineSwingFsmTest test = TimelineSwingFsmTest.getInstance();
-        GreedyTester tester = new GreedyTester(test);
-        tester.addListener(new VerboseListener());
-        tester.addListener(new StopOnFailureListener());
-        tester.addCoverageMetric(new TransitionCoverage());
-        tester.addCoverageMetric(new TransitionPairCoverage());
-        tester.addCoverageMetric(new ActionCoverage());
-        tester.addCoverageMetric(new StateCoverage());
-        tester.setResetProbability(0.005);
-        GraphListener graphListener = tester.buildGraph(50000);
-        //tester.generate(50000);
-        tester.printCoverage();
-        graphListener.printGraphDot("timeline-swing.dot");
     }
 
     @Override

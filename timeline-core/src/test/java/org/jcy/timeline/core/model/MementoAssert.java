@@ -25,6 +25,29 @@ public class MementoAssert
         return this;
     }
 
+    public <T extends Item> MementoAssert hasItems(T... items) {
+        isNotNull();
+        for (T item : items) {
+            if (!actual.getItems().contains(item)) {
+                failWithMessage(ITEM_PATTERN, item, actual.getItems());
+            }
+        }
+
+        return this;
+    }
+
+    public <T extends Item> MementoAssert hasTopItem(T topItem) {
+        isNotNull();
+        if (!(
+                (topItem == null && !actual.getTopItem().isPresent())
+                 || (actual.getTopItem().isPresent() && actual.getTopItem().get().equals(topItem))
+        )) {
+            failWithMessage(TOP_ITEM_PATTERN, topItem, actual.getTopItem());
+        }
+
+        return this;
+    }
+
     public MementoAssert hasEqualItems(Memento<? extends Item> expected) {
         isNotNull();
         if (!actual.getItems().equals(expected.getItems())) {

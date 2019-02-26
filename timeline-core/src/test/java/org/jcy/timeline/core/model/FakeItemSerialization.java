@@ -8,7 +8,7 @@ public class FakeItemSerialization implements ItemSerialization<FakeItem> {
 
     @Override
     public String serialize(FakeItem item) {
-        return item.getId() + SEPARATOR + String.valueOf(item.getTimeStamp());
+        return item.getId() + SEPARATOR + item.getTimeStamp();
     }
 
     @Override

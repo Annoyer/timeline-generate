@@ -87,13 +87,6 @@ public class Timeline<I extends Item> {
 		return this.fetchCount;
 	}
 
-	public void setFetchCount(int fetchCount) {
-		Assertion.check(fetchCount <= FETCH_COUNT_UPPER_BOUND, "ERROR_EXCEEDS_UPPER_BOUND", FETCH_COUNT_UPPER_BOUND, fetchCount);
-		Assertion.check(fetchCount >= FETCH_COUNT_LOWER_BOUND, "ERROR_EXCEEDS_LOWER_BOUND", FETCH_COUNT_LOWER_BOUND, fetchCount);
-
-		this.fetchCount = fetchCount;
-	}
-
 	/**
 	 * 获取oldest开始的fetchCount条记录，存入内存，并写入本地文件。
 	 */
@@ -112,6 +105,7 @@ public class Timeline<I extends Item> {
 	 */
 	public void fetchNew() {
 		addSorted(itemProvider.fetchNew(getLatest()));
+		updateTopItem(); // BUG： 如果远程库开始的commit为空，fetchNew得到的就是第一条记录，必须updateTopItem不然下面的Assertion会报错
 		sessionStorage.store(createMemento());
 	}
 

@@ -12,8 +12,8 @@ import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static org.jcy.timeline.swing.TimelineSwingFsmTest.BASE_DIRECTORY;
-import static org.jcy.timeline.swing.TimelineSwingFsmTest.REPOSITORY_NAME;
+import static org.jcy.timeline.swing.TimelineSwingFsm.BASE_DIRECTORY;
+import static org.jcy.timeline.swing.TimelineSwingFsm.REPOSITORY_NAME;
 
 public class TimelineStateMachine {
 

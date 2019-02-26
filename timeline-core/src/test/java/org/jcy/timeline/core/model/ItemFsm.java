@@ -4,11 +4,15 @@ import nz.ac.waikato.modeljunit.*;
 import nz.ac.waikato.modeljunit.coverage.ActionCoverage;
 import nz.ac.waikato.modeljunit.coverage.StateCoverage;
 import nz.ac.waikato.modeljunit.coverage.TransitionCoverage;
+import org.jcy.timeline.core.FsmTestHelper;
 import org.junit.Assert;
+import org.junit.Test;
 
 import java.io.FileNotFoundException;
 
-public class FsmItemTest implements FsmModel {
+public class ItemFsm implements FsmModel {
+
+    private static ItemFsm INSTANCE = new ItemFsm();
 
     private FakeItem itemA;
 
@@ -18,7 +22,7 @@ public class FsmItemTest implements FsmModel {
 
     private EqualsTester<FakeItem> equalsTester;
 
-    public FsmItemTest() {
+    public ItemFsm() {
         itemA = new FakeItem("A", 1000);
         equalsTester = EqualsTester.newInstance(itemA);
     }
@@ -173,16 +177,8 @@ public class FsmItemTest implements FsmModel {
         A_MINUS_B = itemA.compareTo(itemB);
     }
 
-    public static void main(String[] args) throws FileNotFoundException {
-        FsmItemTest test = new FsmItemTest();
-        Tester tester = new GreedyTester(test);
-        tester.addListener(new VerboseListener());
-        tester.addListener(new StopOnFailureListener());
-        tester.addCoverageMetric(new TransitionCoverage());
-        tester.addCoverageMetric(new ActionCoverage());
-        tester.addCoverageMetric(new StateCoverage());
-        tester.generate(50);
-        tester.printCoverage();
-
+    @Test
+    public void runTest() {
+        FsmTestHelper.runTest(INSTANCE, "item-fsm.dot");
     }
 }
