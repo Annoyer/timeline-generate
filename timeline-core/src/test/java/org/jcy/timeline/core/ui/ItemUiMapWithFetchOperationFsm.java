@@ -2,22 +2,22 @@ package org.jcy.timeline.core.ui;
 
 import nz.ac.waikato.modeljunit.Action;
 import nz.ac.waikato.modeljunit.FsmModel;
-import org.jcy.timeline.core.FsmTestHelper;
+import org.jcy.timeline.core.CoreFsmTestRunner;
 import org.jcy.timeline.core.model.FakeItem;
 import org.jcy.timeline.core.model.Timeline;
+import org.jcy.timeline.util.Messages;
 import org.junit.Test;
 import org.mockito.Mockito;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.jcy.timeline.core.ThrowableCaptor.thrownBy;
 import static org.jcy.timeline.core.model.FakeItemUtils.FIRST_ITEM;
 import static org.mockito.Mockito.*;
 
 public class ItemUiMapWithFetchOperationFsm implements FsmModel {
 
-    private static ItemUiMapWithFetchOperationFsm INSTANCE = new ItemUiMapWithFetchOperationFsm();
-
-    private enum State { START, CREATED, TIMELINE_CHECKED, ITEMS_PREPARED};
+    private enum State { START, CREATED, CREATE_FAILURE, TIMELINE_CHECKED, ITEMS_PREPARED};
 
     private State state;
 
@@ -60,6 +60,31 @@ public class ItemUiMapWithFetchOperationFsm implements FsmModel {
         isOriginalTimelineEmpty = !isOriginalTimelineEmpty;
     }
 
+    public boolean createWithNullAsTimelineGuard() {
+        return state == State.START;
+    }
+    @Action
+    public void createWithNullAsTimeline() {
+        Throwable actual = thrownBy(() -> new ItemUiMap<>(null, stubItemUiFactory(null, null, null, 0)));
+
+        assertThat(actual)
+                .hasMessage(Messages.get("TIMELINE_MUST_NOT_BE_NULL"))
+                .isInstanceOf(IllegalArgumentException.class);
+        state = State.CREATE_FAILURE;
+    }
+
+    public boolean createWithNullAsItemUiFactoryGuard() {
+        return state == State.START;
+    }
+    @Action
+    public void createWithNullAsItemUiFactory() {
+        Throwable actual = thrownBy(() -> new ItemUiMap<>(timeline, null));
+
+        assertThat(actual)
+                .hasMessage(Messages.get("ITEM_UI_FACTORY_MUST_NOT_BE_NULL"))
+                .isInstanceOf(IllegalArgumentException.class);
+        state = State.CREATE_FAILURE;
+    }
 
     public boolean isTimelineEmptyGuard() {
         return state == State.CREATED;
@@ -124,6 +149,8 @@ public class ItemUiMapWithFetchOperationFsm implements FsmModel {
         } else {
             verify(actual, never()).update();
         }
+
+        state = State.ITEMS_PREPARED;
     }
 
     public boolean findByItemIdGuard() {
@@ -135,6 +162,18 @@ public class ItemUiMapWithFetchOperationFsm implements FsmModel {
         assertThat(target.findByItemId("UNKNOWN")).isNull();
     }
 
+    public boolean findByItemIdWithNullIdGuard() {
+        return state == State.ITEMS_PREPARED;
+    }
+    @Action
+    public void findByItemIdWithNullId() {
+        Throwable actual = thrownBy(() -> target.findByItemId(null));
+
+        assertThat(actual)
+                .hasMessageContaining(Messages.get("ID_MUST_NOT_BE_NULL"))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
     public boolean containsItemUiGuard() {
         return state == State.ITEMS_PREPARED;
     }
@@ -142,6 +181,18 @@ public class ItemUiMapWithFetchOperationFsm implements FsmModel {
     public void containsItemUi() {
         assertThat(target.containsItemUi(item.getId())).isTrue();
         assertThat(target.containsItemUi("UNKNOWN")).isFalse();
+    }
+
+    public boolean containsItemUiWithNullIdGuard() {
+        return state == State.ITEMS_PREPARED;
+    }
+    @Action
+    public void containsItemUiWithNullId() {
+        Throwable actual = thrownBy(() -> target.containsItemUi(null));
+
+        assertThat(actual)
+                .hasMessageContaining(Messages.get("ID_MUST_NOT_BE_NULL"))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     private static ItemUiFactory<FakeItem, Object> stubItemUiFactory(
@@ -165,6 +216,6 @@ public class ItemUiMapWithFetchOperationFsm implements FsmModel {
 
     @Test
     public void runTest() {
-        FsmTestHelper.runTest(INSTANCE, "item-ui-map-with-fetch-operation-fsm.dot");
+        CoreFsmTestRunner.runTest(this, "item-ui-map-with-fetch-operation-fsm.dot");
     }
 }

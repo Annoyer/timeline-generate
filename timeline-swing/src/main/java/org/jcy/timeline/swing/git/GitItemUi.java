@@ -84,7 +84,7 @@ class GitItemUi implements SwingItemUi<GitItem> {
 	}
 
 	private String getPrettyTime() {
-		return NiceTime.format(new Date(item.getTimeStamp()));
+		return NiceTime.format(item.getTimeStamp());
 	}
 
 	public Component getComponent() {

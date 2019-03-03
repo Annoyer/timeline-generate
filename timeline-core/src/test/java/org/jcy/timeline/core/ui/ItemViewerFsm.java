@@ -2,7 +2,7 @@ package org.jcy.timeline.core.ui;
 
 import nz.ac.waikato.modeljunit.Action;
 import nz.ac.waikato.modeljunit.FsmModel;
-import org.jcy.timeline.core.FsmTestHelper;
+import org.jcy.timeline.core.CoreFsmTestRunner;
 import org.jcy.timeline.core.model.Item;
 import org.junit.Assert;
 import org.junit.Test;
@@ -11,8 +11,6 @@ import org.mockito.Mockito;
 import static org.mockito.Mockito.*;
 
 public class ItemViewerFsm implements FsmModel {
-
-    private static ItemViewerFsm INSTANCE = new ItemViewerFsm();
 
     private enum State {START, CREATED, UI_CREATED, INITIALIZED};
 
@@ -128,6 +126,6 @@ public class ItemViewerFsm implements FsmModel {
 
     @Test
     public void runTest() {
-        FsmTestHelper.runTest(INSTANCE, "/item-viewer-fsm.dot");
+        CoreFsmTestRunner.runTest(this, "/item-viewer-fsm.dot");
     }
 }

@@ -3,11 +3,14 @@ package org.jcy.timeline.web.ui;
 import org.jcy.timeline.core.model.Timeline;
 import org.jcy.timeline.core.provider.git.GitItem;
 import org.jcy.timeline.core.ui.AutoUpdate;
+import org.jcy.timeline.web.model.GitItemUi;
 import org.jcy.timeline.web.model.UpdateInfo;
 import org.jcy.timeline.web.util.MessageUtils;
 
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.stream.Collectors;
 
 public class WebAutoUpdate implements AutoUpdate {
 
@@ -21,7 +24,7 @@ public class WebAutoUpdate implements AutoUpdate {
 
     private final String sessionId;
 
-    WebAutoUpdate(String sessionId, Timeline<GitItem> timeline) {
+    public WebAutoUpdate(String sessionId, Timeline<GitItem> timeline) {
         this.sessionId = sessionId;
         this.timeline = timeline;
     }
@@ -33,7 +36,7 @@ public class WebAutoUpdate implements AutoUpdate {
                 if (!this.isScheduled) {
                     isScheduled = true;
                     timer = new Timer();
-                    timer.schedule(this.createAutoUpdateTask(), AUTO_UPDATE_INTERVAL, AUTO_UPDATE_INTERVAL);
+                    timer.schedule(this.createAutoUpdateTask(), 0, AUTO_UPDATE_INTERVAL);
                 }
             }
         }
@@ -52,7 +55,10 @@ public class WebAutoUpdate implements AutoUpdate {
         return new TimerTask() {
             @Override
             public void run() {
-                MessageUtils.send(sessionId, new UpdateInfo(timeline.getNewCount(), timeline.getItems()));
+                List<GitItemUi> itemUIs = timeline.getItems().stream()
+                        .map(GitItemUi::new)
+                        .collect(Collectors.toList());
+                MessageUtils.send(sessionId, new UpdateInfo(timeline.getNewCount(), itemUIs));
             }
         };
     }

@@ -9,11 +9,9 @@ public class UpdateInfo {
     private int newCount;
     private List<GitItemUi> items;
 
-    public UpdateInfo(int newCount, List<GitItem> items) {
+    public UpdateInfo(int newCount, List<GitItemUi> items) {
         this.newCount = newCount;
-        this.items = items.stream()
-                .map(GitItemUi::new)
-                .collect(Collectors.toList());
+        this.items = items;
     }
 
     public int getNewCount() {

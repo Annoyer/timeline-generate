@@ -8,8 +8,7 @@ import org.jcy.timeline.web.service.TimelineService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.security.Principal;
@@ -21,7 +20,9 @@ public class TimelineController {
 	private TimelineService timelineService;
 
 	/**
+	 * Start auto update a specific timeline.
 	 *
+	 * @param principal the name of principal is the registered session id.
 	 */
 	@MessageMapping("/startAutoUpdate")
 	public void startAutoUpdate(Principal principal) {
@@ -30,38 +31,41 @@ public class TimelineController {
 		}
 	}
 
-	@RequestMapping("/")
+	@RequestMapping("/index")
 	public String index() {
 		return "index";
 	}
 
 	/**
+	 * Register a timeline.
 	 *
-	 * @param request
+	 * @param request request
 	 */
-	@RequestMapping("/register")
+	@RequestMapping(value = "/register", method = RequestMethod.POST)
 	@ResponseBody
-	public RegisterResponse register(RegisterRequest request, HttpSession session) {
+	public RegisterResponse register(@RequestBody RegisterRequest request, HttpSession session) {
 		return timelineService.register(session.getId(), request.getUri(), request.getProjectName());
 	}
 
 	/**
+	 * Fetch New Commits.
 	 *
-	 * @param request
+	 * @param request request with websocket session id.
 	 */
-	@RequestMapping("/new")
+	@RequestMapping(value = "/new", method = RequestMethod.POST)
 	@ResponseBody
-	public FetchResponse fetchNew(FetchRequest request) {
+	public FetchResponse fetchNew(@RequestBody FetchRequest request) {
 		return timelineService.fetchNew(request.getId());
 	}
 
 	/**
+	 * Fetch More Commits.
 	 *
-	 * @param request
+	 * @param request request with websocket session id.
 	 */
-	@RequestMapping("/more")
+	@RequestMapping(value = "/more", method = RequestMethod.POST)
 	@ResponseBody
-	public FetchResponse fetchMore(FetchRequest request) {
+	public FetchResponse fetchMore(@RequestBody FetchRequest request) {
 		return timelineService.fetchMore(request.getId());
 	}
 

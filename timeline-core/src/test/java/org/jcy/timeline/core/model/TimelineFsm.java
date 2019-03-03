@@ -2,8 +2,7 @@ package org.jcy.timeline.core.model;
 
 import nz.ac.waikato.modeljunit.Action;
 import nz.ac.waikato.modeljunit.FsmModel;
-import org.jcy.timeline.core.FsmTestHelper;
-import org.jcy.timeline.core.util.FileStorageStructureTester;
+import org.jcy.timeline.core.CoreFsmTestRunner;
 import org.jcy.timeline.util.Messages;
 import org.junit.Assert;
 import org.junit.Test;
@@ -22,8 +21,6 @@ import static org.mockito.Mockito.*;
 
 public class TimelineFsm implements FsmModel {
 
-    private static TimelineFsm INSTANCE = new TimelineFsm();
-
     private static final int START_ID = 500000;
 
     private SessionStorage<FakeItem> sessionStorage;
@@ -33,7 +30,7 @@ public class TimelineFsm implements FsmModel {
     private Timeline<FakeItem> timeline;
 
     private enum State {
-        START, SESSION_STORAGE_CREATED, CREATED
+        START, SESSION_STORAGE_CREATED, CREATED, CREATED_FAILURE
     }
 
     private State state = State.START;
@@ -81,7 +78,7 @@ public class TimelineFsm implements FsmModel {
     public void create() {
         itemProvider = new FakeItemProviderStub();
 
-        this.constructorAssertionCheck();
+        this.mementoCreateAssertionCheck();
 
         Timeline<FakeItem> actual = new Timeline<>(itemProvider, sessionStorage123);
         assertThat(actual.getItems()).containsExactly(SECOND_ITEM, FIRST_ITEM);
@@ -95,15 +92,28 @@ public class TimelineFsm implements FsmModel {
         state = State.CREATED;
     }
 
-    private void constructorAssertionCheck() {
-        this.mementoCreateAssertionCheck();
+    public boolean createWithNullAsItemProviderGuard() {
+        return state == State.SESSION_STORAGE_CREATED;
+    }
+    @Action
+    public void createWithNullAsItemProvider() {
         assertThat(thrownBy(() -> new Timeline<>(null, sessionStorage)))
                 .hasMessage(Messages.get("ERROR_ITEM_PROVIDER_MUST_NOT_BE_NULL"))
                 .isInstanceOf(IllegalArgumentException.class);
 
-        assertThat(thrownBy(() -> new Timeline<>(itemProvider, null)))
-                .hasMessage(Messages.get("ERROR_SESSION_PROVIDER_MUST_NOT_BE_NULL"))
+        state = State.CREATED_FAILURE;
+    }
+
+    public boolean createWithNullAsSessionStorageGuard() {
+        return state == State.SESSION_STORAGE_CREATED;
+    }
+    @Action
+    public void createWithNullAsSessionStorage() {
+        assertThat(thrownBy(() -> new Timeline<>(null, sessionStorage)))
+                .hasMessage(Messages.get("ERROR_ITEM_PROVIDER_MUST_NOT_BE_NULL"))
                 .isInstanceOf(IllegalArgumentException.class);
+
+        state = State.CREATED_FAILURE;
     }
 
     private void mementoCreateAssertionCheck() {
@@ -165,6 +175,13 @@ public class TimelineFsm implements FsmModel {
     }
     @Action
     public void getNewCount() {
+        timeline.fetchItems();
+        ++currentStorageCall;
+
+        int actual = timeline.getNewCount();
+
+        assertThat(actual).isEqualTo(0);
+
         FakeItem[] newItems = this.createNewItems(2);
         itemProvider.addItems(newItems[0]);
         timeline.fetchNew();
@@ -195,7 +212,6 @@ public class TimelineFsm implements FsmModel {
     }
     @Action
     public void setTopItem() {
-        this.setTopItemAssertionCheck();
 
         FakeItem currentTop = timeline.getTopItem().orElse(null);
 
@@ -213,13 +229,28 @@ public class TimelineFsm implements FsmModel {
         MementoAssert.assertThat(captureStorageMemento(++currentStorageCall))
                 .isEqualTo(createMemento(nextTop, timeline.getItems()));
     }
-    private void setTopItemAssertionCheck() {
-        assertThat(thrownBy(() -> timeline.setTopItem(null)))
-                .hasMessageContaining(Messages.get("ERROR_TOP_ITEM_MUST_NOT_BE_NULL"))
-                .isInstanceOf(IllegalArgumentException.class);
 
-        assertThat(thrownBy(() -> timeline.setTopItem(new FakeItem("0", 0))))
-                .hasMessageContaining("0")
+    public boolean setTopItemIfNoElementOfItemListGuard() {
+        return state == State.CREATED;
+    }
+    @Action
+    public void setTopItemIfNoElementOfItemList() {
+        Throwable actual = thrownBy(() -> timeline.setTopItem(FIRST_ITEM));
+
+        assertThat(actual)
+                .hasMessageContaining(FIRST_ITEM.getId())
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    public boolean setTopItemWithNullGuard() {
+        return state == State.CREATED;
+    }
+    @Action
+    public void setTopItemWithNull() {
+        Throwable actual = thrownBy(() -> timeline.setTopItem(null));
+
+        assertThat(actual)
+                .hasMessageContaining(Messages.get("ERROR_TOP_ITEM_MUST_NOT_BE_NULL"))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -267,6 +298,6 @@ public class TimelineFsm implements FsmModel {
 
     @Test
     public void runTest() {
-        FsmTestHelper.runTest(INSTANCE,  "timeline-fms.dot");
+        CoreFsmTestRunner.runTest(this,  "timeline-fms.dot");
     }
 }

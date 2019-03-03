@@ -2,7 +2,7 @@ package org.jcy.timeline.core.util;
 
 import nz.ac.waikato.modeljunit.Action;
 import nz.ac.waikato.modeljunit.FsmModel;
-import org.jcy.timeline.core.FsmTestHelper;
+import org.jcy.timeline.core.CoreFsmTestRunner;
 import org.jcy.timeline.util.Messages;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -15,9 +15,10 @@ import static org.jcy.timeline.core.ThrowableCaptor.thrownBy;
 import static org.jcy.timeline.core.util.FileStorageStructure.STORAGE_FILE;
 import static org.jcy.timeline.core.util.FileStorageStructure.TIMELINE_DIRECTORY;
 
-public class FileStorageStructureTester implements FsmModel {
-
-    private static FileStorageStructureTester INSTANCE = new FileStorageStructureTester();
+/**
+ * Test with different input in different action leading to different states.
+ */
+public class FileStorageStructureFsm implements FsmModel {
 
     private enum State { UNCREATED, CREATED_SUCCESS, CREATED_FAILURE }
 
@@ -118,6 +119,6 @@ public class FileStorageStructureTester implements FsmModel {
 
     @Test
     public void runTest() {
-        FsmTestHelper.runTest(INSTANCE, "file-storage-structure-fsm.dot");
+        CoreFsmTestRunner.runTest(this, "file-storage-structure-fsm.dot");
     }
 }

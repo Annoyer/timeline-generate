@@ -1,18 +1,11 @@
 package org.jcy.timeline.core.model;
 
 import nz.ac.waikato.modeljunit.*;
-import nz.ac.waikato.modeljunit.coverage.ActionCoverage;
-import nz.ac.waikato.modeljunit.coverage.StateCoverage;
-import nz.ac.waikato.modeljunit.coverage.TransitionCoverage;
-import org.jcy.timeline.core.FsmTestHelper;
+import org.jcy.timeline.core.CoreFsmTestRunner;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.FileNotFoundException;
-
 public class ItemFsm implements FsmModel {
-
-    private static ItemFsm INSTANCE = new ItemFsm();
 
     private FakeItem itemA;
 
@@ -179,6 +172,6 @@ public class ItemFsm implements FsmModel {
 
     @Test
     public void runTest() {
-        FsmTestHelper.runTest(INSTANCE, "item-fsm.dot");
+        CoreFsmTestRunner.runTest(this, "item-fsm.dot");
     }
 }

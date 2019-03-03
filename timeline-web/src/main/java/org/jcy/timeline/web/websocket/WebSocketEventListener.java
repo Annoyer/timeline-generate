@@ -6,11 +6,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import org.springframework.web.socket.messaging.SessionConnectEvent;
+import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import org.springframework.web.socket.messaging.SessionUnsubscribeEvent;
 
 import java.security.Principal;
-
 
 @Component
 public class WebSocketEventListener {
@@ -19,13 +20,6 @@ public class WebSocketEventListener {
 
     @Autowired
     private TimelineService timelineService;
-
-    @EventListener
-    public void handleUnsubscribeEvent(SessionUnsubscribeEvent event) {
-        log.info("[ws-unsubscribe] socket disconnect: {}", event.getMessage());
-        this.unregister(event.getUser());
-
-    }
 
     @EventListener
     public void handleDisconnectListener(SessionDisconnectEvent event) {

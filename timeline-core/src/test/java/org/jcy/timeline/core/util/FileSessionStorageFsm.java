@@ -2,7 +2,7 @@ package org.jcy.timeline.core.util;
 
 import nz.ac.waikato.modeljunit.Action;
 import nz.ac.waikato.modeljunit.FsmModel;
-import org.jcy.timeline.core.FsmTestHelper;
+import org.jcy.timeline.core.CoreFsmTestRunner;
 import org.jcy.timeline.core.model.FakeItem;
 import org.jcy.timeline.core.model.FakeItemSerialization;
 import org.jcy.timeline.core.model.Memento;
@@ -21,13 +21,14 @@ import static org.jcy.timeline.core.ThrowableCaptor.thrownBy;
 import static org.jcy.timeline.core.model.FakeItemUtils.ALL_ITEMS;
 import static org.jcy.timeline.core.model.FakeItemUtils.FIRST_ITEM;
 
+/**
+ * Test with different inputs in a same action.
+ */
 public class FileSessionStorageFsm implements FsmModel {
-
-    private static FileSessionStorageFsm INSTANCE = new FileSessionStorageFsm();
 
     private TemporaryFolder temporaryFolder;
 
-    private enum State {UNCREATED, CREATED}
+    private enum State {START, CREATED, STORED}
 
     private State state;
 
@@ -42,7 +43,7 @@ public class FileSessionStorageFsm implements FsmModel {
 
     @Override
     public void reset(boolean testing) {
-        state = State.UNCREATED;
+        state = State.START;
         if (temporaryFolder != null) {
             temporaryFolder.delete();
             temporaryFolder = null;
@@ -53,7 +54,7 @@ public class FileSessionStorageFsm implements FsmModel {
     }
 
     public boolean createGuard() {
-        return state == State.UNCREATED;
+        return state == State.START;
     }
     @Action
     public void create() throws IOException {
@@ -109,7 +110,7 @@ public class FileSessionStorageFsm implements FsmModel {
 
 
     public boolean storeGuard() {
-        return state == State.CREATED;
+        return state == State.CREATED || state == State.STORED;
     }
     @Action
     public void store() throws IOException {
@@ -163,7 +164,7 @@ public class FileSessionStorageFsm implements FsmModel {
     }
 
     public boolean readGuard() {
-        return state == State.CREATED && expected != null;
+        return state == State.STORED && expected != null;
     }
     @Action
     public void read() throws IOException {
@@ -199,6 +200,6 @@ public class FileSessionStorageFsm implements FsmModel {
 
     @Test
     public void runTest() {
-        FsmTestHelper.runTest(INSTANCE, "file-session-storage-fsm.dot");
+        CoreFsmTestRunner.runTest(this, "file-session-storage-fsm.dot");
     }
 }

@@ -16,6 +16,8 @@ public final class Messages {
 
 	private static final Properties properties;
 
+	static final String UNKNOWN = "";
+
 	static {
 		FILE_LOCATION = Messages.class.getResource("/").getPath() + "messages.properties";
 		properties = new Properties();
@@ -30,14 +32,16 @@ public final class Messages {
 	}
 
 	public static String get(String patternName) {
-		return properties.getProperty(patternName, "");
-	}
-
-	public static String get(String patternName, int num) {
-		return String.format(properties.getProperty(patternName, ""), num);
+		if (patternName == null) {
+			throw new IllegalArgumentException("Message pattern name must not be null.");
+		}
+		return properties.getProperty(patternName, UNKNOWN);
 	}
 
 	public static String get(String patternName, Object...args) {
-		return String.format(properties.getProperty(patternName, ""), args);
+		if (patternName == null) {
+			throw new IllegalArgumentException("Message pattern name must not be null.");
+		}
+		return String.format(properties.getProperty(patternName, UNKNOWN), args);
 	}
 }

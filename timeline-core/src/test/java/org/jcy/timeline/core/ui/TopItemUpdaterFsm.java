@@ -2,7 +2,7 @@ package org.jcy.timeline.core.ui;
 
 import nz.ac.waikato.modeljunit.Action;
 import nz.ac.waikato.modeljunit.FsmModel;
-import org.jcy.timeline.core.FsmTestHelper;
+import org.jcy.timeline.core.CoreFsmTestRunner;
 import org.jcy.timeline.core.model.FakeItem;
 import org.jcy.timeline.core.model.Timeline;
 import org.junit.Test;
@@ -16,8 +16,6 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
 public class TopItemUpdaterFsm implements FsmModel {
-
-    private static TopItemUpdaterFsm INSTANCE = new TopItemUpdaterFsm();
 
     private enum State {UNCHANGED, CHANGED}
 
@@ -160,6 +158,6 @@ public class TopItemUpdaterFsm implements FsmModel {
 
     @Test
     public void runTest() {
-        FsmTestHelper.runTest(INSTANCE, "top-item-updater-fsm.dot");
+        CoreFsmTestRunner.runTest(this, "top-item-updater-fsm.dot");
     }
 }

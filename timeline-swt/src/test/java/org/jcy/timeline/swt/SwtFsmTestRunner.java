@@ -1,4 +1,4 @@
-package org.jcy.timeline.core;
+package org.jcy.timeline.swt;
 
 import nz.ac.waikato.modeljunit.*;
 import nz.ac.waikato.modeljunit.coverage.ActionCoverage;
@@ -10,16 +10,15 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 
-public class FsmTestHelper {
+public class SwtFsmTestRunner {
 
-    private static final Logger log = LoggerFactory.getLogger(FsmTestHelper.class);
+    private static final Logger log = LoggerFactory.getLogger(SwtFsmTestRunner.class);
 
     private static final File RECORD_DIR = new File("E:\\@文件\\大学\\@毕业\\毕业论文\\data");
     private static final String FILE_SUFFIX = ".dot";
 
-    private static final String DEFAULT_SUB_DIR = "timeline-core";
+    private static final String DEFAULT_SUB_DIR = "timeline-swt";
 
     public static void runTest(FsmModel fsm, String graphFileName) {
         runTest(fsm, DEFAULT_SUB_DIR, graphFileName);
@@ -47,7 +46,7 @@ public class FsmTestHelper {
             if (!detailFile.exists()) {
                 detailFile.createNewFile();
             }
-            model.setOutput(new PrintWriter(detailFile));
+            //model.setOutput(new PrintWriter(detailFile));
 
             GreedyTester tester = new GreedyTester(model);
             tester.addListener(new StopOnFailureListener());

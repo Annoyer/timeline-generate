@@ -45,10 +45,6 @@ class GitItemUi implements SwtItemUi<GitItem> {
 		time.setText(getPrettyTime());
 	}
 
-	String getTime() {
-		return time.getText();
-	}
-
 
 	private static Composite createControl(Composite composite) {
 		Composite result = new Composite(composite, SWT.NONE);
