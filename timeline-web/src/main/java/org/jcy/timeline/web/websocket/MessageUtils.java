@@ -1,4 +1,4 @@
-package org.jcy.timeline.web.util;
+package org.jcy.timeline.web.websocket;
 
 import org.jcy.timeline.web.model.UpdateInfo;
 import org.jcy.timeline.web.service.AutoUpdateService;

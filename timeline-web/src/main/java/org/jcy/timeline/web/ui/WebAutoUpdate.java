@@ -5,7 +5,7 @@ import org.jcy.timeline.core.provider.git.GitItem;
 import org.jcy.timeline.core.ui.AutoUpdate;
 import org.jcy.timeline.web.model.GitItemUi;
 import org.jcy.timeline.web.model.UpdateInfo;
-import org.jcy.timeline.web.util.MessageUtils;
+import org.jcy.timeline.web.websocket.MessageUtils;
 
 import java.util.List;
 import java.util.Timer;

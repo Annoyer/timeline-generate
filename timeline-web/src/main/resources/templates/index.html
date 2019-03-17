@@ -35,7 +35,7 @@
         var projectName = $("#projectName").val();
         $.ajax({
             type: "POST",
-            url: "/timeline/register",
+            url: "/register",
             data: JSON.stringify({
                 uri : "https://github.com/Annoyer/jenkins-web-test.git",
                 projectName : "jenkins-web-test"
