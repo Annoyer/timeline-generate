@@ -100,136 +100,53 @@
 
     <build>
         <plugins>
-            <!--&lt;!&ndash; 静态代码分析 &ndash;&gt;-->
-            <!--&lt;!&ndash; SpotBugs &ndash;&gt;-->
-            <!--<plugin>-->
-                <!--<groupId>com.github.spotbugs</groupId>-->
-                <!--<artifactId>spotbugs-maven-plugin</artifactId>-->
-                <!--<version>3.1.8</version>-->
-                <!--<configuration>-->
-                    <!--&lt;!&ndash; Low、Medium和High (Low最严格) &ndash;&gt;-->
-                    <!--<threshold>Medium</threshold>-->
-                    <!--<failOnError>true</failOnError>-->
-                <!--</configuration>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<id>run-spotbugs</id>-->
-                        <!--<phase>prepare-package</phase>-->
-                        <!--<goals>-->
-                            <!--<goal>spotbugs</goal>-->
-                        <!--</goals>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-            <!--</plugin>-->
-            <!--&lt;!&ndash; PMD &ndash;&gt;-->
-            <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-pmd-plugin</artifactId>-->
-                <!--<version>3.11.0</version>-->
-                <!--<configuration>-->
-                    <!--<sourceEncoding>utf-8</sourceEncoding>-->
-                    <!--<targetJdk>1.8</targetJdk>-->
-                <!--</configuration>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<id>run-pmd</id>-->
-                        <!--&lt;!&ndash; 在package 阶段触发 &ndash;&gt;-->
-                        <!--<phase>prepare-package</phase>-->
-                        <!--<goals>-->
-                            <!--<goal>pmd</goal>-->
-                        <!--</goals>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-            <!--</plugin>-->
-            <!--&lt;!&ndash; CheckStyle &ndash;&gt;-->
-            <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-checkstyle-plugin</artifactId>-->
-                <!--<version>3.0.0</version>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<id>run-checkstyle-alibaba</id>-->
-                        <!--<phase>validate</phase>-->
-                        <!--<configuration>-->
-                            <!--<configLocation>build-tools/src/main/resources/alibaba_checks.xml</configLocation>-->
-                            <!--<encoding>UTF-8</encoding>-->
-                            <!--<consoleOutput>true</consoleOutput>-->
-                            <!--<failsOnError>false</failsOnError>-->
-                            <!--<linkXRef>false</linkXRef>-->
-                            <!--<includeTestSourceDirectory>true</includeTestSourceDirectory>-->
-                            <!--<encoding>utf-8</encoding>-->
-                            <!--<outputFile>${project.build.directory}/checkstyle/alibaba/checkstyle-result.xml</outputFile>-->
-                        <!--</configuration>-->
-                        <!--<goals>-->
-                            <!--<goal>checkstyle</goal>-->
-                        <!--</goals>-->
-                    <!--</execution>-->
-                    <!--<execution>-->
-                        <!--<id>run-checkstyle-google</id>-->
-                        <!--<phase>validate</phase>-->
-                        <!--<configuration>-->
-                            <!--<configLocation>google_checks.xml</configLocation>-->
-                            <!--<encoding>UTF-8</encoding>-->
-                            <!--<consoleOutput>true</consoleOutput>-->
-                            <!--<failsOnError>false</failsOnError>-->
-                            <!--<linkXRef>false</linkXRef>-->
-                            <!--<includeTestSourceDirectory>true</includeTestSourceDirectory>-->
-                            <!--<encoding>utf-8</encoding>-->
-                            <!--<outputFile>${project.build.directory}/checkstyle/google/checkstyle-result.xml</outputFile>-->
-                        <!--</configuration>-->
-                        <!--<goals>-->
-                            <!--<goal>checkstyle</goal>-->
-                        <!--</goals>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-            <!--</plugin>-->
 
-            <!--&lt;!&ndash; jacoco &ndash;&gt;-->
-            <!--<plugin>-->
-                <!--<groupId>org.jacoco</groupId>-->
-                <!--<artifactId>jacoco-maven-plugin</artifactId>-->
-                <!--<version>${jacoco.version}</version>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--&lt;!&ndash;-->
-                        <!--在maven的initialize阶段，将Jacoco的runtime agent作为VM的一个参数-->
-                        <!--传给被测程序，用于监控JVM中的调用。-->
-                        <!--&ndash;&gt;-->
-                        <!--<id>default-prepare-agent</id>-->
-                        <!--<goals>-->
-                            <!--<goal>prepare-agent</goal>-->
-                        <!--</goals>-->
-                        <!--<configuration>-->
-                            <!--<destFile>-->
-                                <!--${project.build.directory}/coverage-reports/jacoco.exec-->
-                            <!--</destFile>-->
-                            <!--<propertyName>surefireArgLine</propertyName>-->
-                            <!--<excludes>-->
-                                <!--<exclude>**/*Application.java</exclude>-->
-                            <!--</excludes>-->
-                        <!--</configuration>-->
-                    <!--</execution>-->
-                    <!--&lt;!&ndash;-->
-                    <!--在程序的verify阶段，执行report测试的程序。-->
-                    <!--文件的输入为perpare-agent阶段中设置或者默认的jacoco.exec.-->
-                    <!--参数 includes和excludes可用来选定report中过滤的类。-->
-                    <!--&ndash;&gt;-->
-                    <!--<execution>-->
-                        <!--<id>default-report</id>-->
-                        <!--<phase>prepare-package</phase>-->
-                        <!--<goals>-->
-                            <!--<goal>report</goal>-->
-                        <!--</goals>-->
-                        <!--<configuration>-->
-                            <!--<dataFile>${project.build.directory}/coverage-reports/jacoco.exec</dataFile>-->
-                            <!--<outputDirectory>${project.reporting.outputDirectory}/jacoco</outputDirectory>-->
-                            <!--<excludes>-->
-                                <!--<exclude>**/*Application.class</exclude>-->
-                            <!--</excludes>-->
-                        <!--</configuration>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-            <!--</plugin>-->
+            <!-- jacoco -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
+                <executions>
+                    <execution>
+                        <!--
+                        在maven的initialize阶段，将Jacoco的runtime agent作为VM的一个参数
+                        传给被测程序，用于监控JVM中的调用。
+                        -->
+                        <id>default-prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                        <configuration>
+                            <destFile>
+                                ${project.build.directory}/coverage-reports/jacoco.exec
+                            </destFile>
+                            <propertyName>surefireArgLine</propertyName>
+                            <excludes>
+                                <exclude>**/*Application.java</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                    <!--
+                    在程序的verify阶段，执行report测试的程序。
+                    文件的输入为perpare-agent阶段中设置或者默认的jacoco.exec.
+                    参数 includes和excludes可用来选定report中过滤的类。
+                    -->
+                    <execution>
+                        <id>default-report</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <dataFile>${project.build.directory}/coverage-reports/jacoco.exec</dataFile>
+                            <outputDirectory>${project.reporting.outputDirectory}/jacoco</outputDirectory>
+                            <excludes>
+                                <exclude>**/*Application.class</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -240,16 +157,16 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
-            <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-surefire-plugin</artifactId>-->
-                <!--<version>2.22.1</version>-->
-                <!--<configuration>-->
-                    <!--<skipTests>false</skipTests>-->
-                    <!--<testFailureIgnore>true</testFailureIgnore>-->
-                    <!--<argLine>${surefireArgLine}</argLine>-->
-                <!--</configuration>-->
-            <!--</plugin>-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.1</version>
+                <configuration>
+                    <skipTests>false</skipTests>
+                    <testFailureIgnore>true</testFailureIgnore>
+                    <argLine>${surefireArgLine}</argLine>
+                </configuration>
+            </plugin>
 
         </plugins>
     </build>

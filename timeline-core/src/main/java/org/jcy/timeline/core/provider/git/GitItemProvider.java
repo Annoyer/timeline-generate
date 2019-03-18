@@ -22,16 +22,6 @@ public class GitItemProvider implements ItemProvider<GitItem> {
 	private final GitOperator operator;
 
 	/**
-	 * Create a new GitItemProvider using temp directory as the location of local git repository..
-	 *
-	 * @param uri git repository uri.
-	 * @param name project name.
-	 */
-	public GitItemProvider(String uri, String name) {
-		this(uri, new File(System.getProperty("java.io.tmpdir")), name);
-	}
-
-	/**
 	 * Create a new GitItemProvider.
 	 *
 	 * @param uri git repository uri.

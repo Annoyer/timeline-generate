@@ -20,16 +20,13 @@ public class WebTimelineFactory {
         if (!base.exists() || !base.isDirectory()) {
             base.mkdirs();
         }
-        if (base.exists() && base.isDirectory()) {
-            FileStorageStructure storageStructure = new FileStorageStructure(base);
-            File timelineDirectory = storageStructure.getTimelineDirectory();
-            GitItemProvider itemProvider = new GitItemProvider(uri, timelineDirectory, name);
-            FileSessionStorage<GitItem> storage = new FileSessionStorage<>(storageStructure.getStorageFile(), new GitItemSerialization());
-            Timeline<GitItem> timeline = this.createTimeline(itemProvider, storage);
-            WebAutoUpdate autoUpdate = this.createAutoUpdate(sessionId, timeline);
-            return new WebTimeline(sessionId, timeline, autoUpdate);
-        }
-        return null;
+        FileStorageStructure storageStructure = new FileStorageStructure(base);
+        File timelineDirectory = storageStructure.getTimelineDirectory();
+        GitItemProvider itemProvider = new GitItemProvider(uri, timelineDirectory, name);
+        FileSessionStorage<GitItem> storage = new FileSessionStorage<>(storageStructure.getStorageFile(), new GitItemSerialization());
+        Timeline<GitItem> timeline = this.createTimeline(itemProvider, storage);
+        WebAutoUpdate autoUpdate = this.createAutoUpdate(sessionId, timeline);
+        return new WebTimeline(sessionId, timeline, autoUpdate);
     }
 
     Timeline<GitItem> createTimeline(GitItemProvider itemProvider, FileSessionStorage<GitItem> storage) {

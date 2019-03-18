@@ -46,7 +46,7 @@ public class SwingFsmTestRunner {
         tester.addCoverageMetric(new ActionCoverage());
         tester.addCoverageMetric(new StateCoverage());
         tester.setResetProbability(0.005);
-        GraphListener graphListener = tester.buildGraph(100000);
+        GraphListener graphListener = tester.buildGraph(10000);
         tester.printCoverage();
         graphListener.printGraphDot(graphPath);
 

@@ -25,7 +25,7 @@ public final class Assertion {
 		String message = Messages.get(messagePatternName);
 		check(message != null, Messages.get("MESSAGE_PATTERN_MUST_NOT_BE_NULL"));
 
-		if (arguments != null) {
+		if (arguments != null && arguments.length > 0) {
 			return String.format(message, arguments);
 		}
 		return message;

@@ -7,6 +7,7 @@ import org.jcy.timeline.web.ItemFactory;
 import org.jcy.timeline.web.WebFsmTestRunner;
 import org.jcy.timeline.web.model.*;
 import org.jcy.timeline.web.service.TimelineService;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,7 +37,7 @@ public class TimelineControllerFsm implements FsmModel {
     private static final String URI = "https://github.com/Annoyer/jenkins-web-test.git";
     private static final String PROJECT_NAME = "jenkins-web-test";
 
-    private enum State {START, REGISTERED, RUNNING}
+    private enum State {START, INDEX, REGISTERED, RUNNING}
 
     private State state;
 
@@ -71,8 +72,15 @@ public class TimelineControllerFsm implements FsmModel {
         state = State.START;
     }
 
+    public boolean indexGuard() {return state == State.START;}
+    @Action
+    public void index() {
+        Assert.assertEquals(controller.index(), "index");
+        state = State.INDEX;
+    }
+
     public boolean registerGuard() {
-        return state == State.START;
+        return state == State.INDEX;
     }
     @Action
     public void register() throws Exception {

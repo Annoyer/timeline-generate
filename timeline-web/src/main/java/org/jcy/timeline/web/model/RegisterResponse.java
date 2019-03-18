@@ -5,7 +5,6 @@ import java.util.List;
 public class RegisterResponse {
     private String id;
     private boolean success;
-    private String cause;
     private List<GitItemUi> items;
 
     public String getId() {
@@ -22,14 +21,6 @@ public class RegisterResponse {
 
     public void setSuccess(boolean success) {
         this.success = success;
-    }
-
-    public String getCause() {
-        return cause;
-    }
-
-    public void setCause(String cause) {
-        this.cause = cause;
     }
 
     public List<GitItemUi> getItems() {

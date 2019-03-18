@@ -7,7 +7,7 @@ import static org.jcy.timeline.test.util.ThrowableCaptor.thrownBy;
 
 public class AssertionTest {
 
-    private static final String MESSAGE_PATTERN = "%s %s message";
+    private static final String MESSAGE_PATTERN = "MESSAGE_FOR_TEST";
     private static final String ARGUMENT_ONE = "one";
     private static final String ARGUMENT_TWO = "two";
     private static final String EXPECTED_MESSAGE = ARGUMENT_ONE + " " + ARGUMENT_TWO + " message";
@@ -20,30 +20,19 @@ public class AssertionTest {
     }
 
     @Test
-    public void formatErrorMessageWithoutPatternArguments() {
-        String expected = "expected";
-
-        String actual = Assertion.formatErrorMessage(expected);
-
-        assertThat(actual).isEqualTo(expected);
-    }
-
-    @Test
     public void formatErrorMessageWithNullAsPattern() {
         Throwable actual = thrownBy(() -> Assertion.formatErrorMessage(null, ARGUMENT_ONE, ARGUMENT_TWO));
 
         assertThat(actual)
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(Messages.get("MESSAGE_PATTERN_MUST_NOT_BE_NULL"));
+                .hasMessage("Message pattern name must not be null.");
     }
 
     @Test
-    public void formatErrorMessageWithNullAsArguments() {
-        Throwable actual = thrownBy(() -> Assertion.formatErrorMessage(MESSAGE_PATTERN, (Object[]) null));
+    public void formatErrorMessageWithNullAsArgument() {
+        String actual = Assertion.formatErrorMessage(MESSAGE_PATTERN);
 
-        assertThat(actual)
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(Messages.get("ARGUMENTS_MUST_NOT_BE_NULL"));
+        assertThat(actual).isEqualTo(Messages.get(MESSAGE_PATTERN));
     }
 
     @Test
@@ -51,15 +40,6 @@ public class AssertionTest {
         Throwable actual = thrownBy(() -> Assertion.check(true, MESSAGE_PATTERN, ARGUMENT_ONE, ARGUMENT_TWO));
 
         assertThat(actual).isNull();
-    }
-
-    @Test
-    public void checkArgumentWithInvalidCondition() {
-        Throwable actual = thrownBy(() -> Assertion.check(false, MESSAGE_PATTERN, ARGUMENT_ONE, ARGUMENT_TWO));
-
-        assertThat(actual)
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(EXPECTED_MESSAGE);
     }
 
     @Test
@@ -74,7 +54,7 @@ public class AssertionTest {
         Throwable actual = thrownBy(() -> Assertion.check(false, MESSAGE_PATTERN, ARGUMENT_ONE, ARGUMENT_TWO));
 
         assertThat(actual)
-                .isInstanceOf(IllegalStateException.class)
+                .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(EXPECTED_MESSAGE);
     }
 }

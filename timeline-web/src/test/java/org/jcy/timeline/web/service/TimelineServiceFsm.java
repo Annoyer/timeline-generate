@@ -7,6 +7,7 @@ import org.jcy.timeline.core.model.Memento;
 import org.jcy.timeline.core.model.Timeline;
 import org.jcy.timeline.core.provider.git.GitItem;
 import org.jcy.timeline.core.provider.git.GitItemProvider;
+import org.jcy.timeline.core.ui.FetchOperation;
 import org.jcy.timeline.core.util.FileSessionStorage;
 import org.jcy.timeline.web.ItemFactory;
 import org.jcy.timeline.web.WebFsmTestRunner;
@@ -23,6 +24,7 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.Matchers.any;
@@ -56,21 +58,22 @@ public class TimelineServiceFsm implements FsmModel {
 
     private int currentSessionId = 0;
 
-    private WebTimeline stubTimeline() {
+    private WebTimeline stubTimeline(boolean empty) {
         newItems = Lists.newArrayList(ItemFactory.createNewItems(100, 6));
-        moreItems = Lists.newArrayList(ItemFactory.createNewItems(1000, 10));
-
         itemProvider = mock(GitItemProvider.class);
-        when(itemProvider.fetchNew(any())).thenReturn(newItems);
-        when(itemProvider.fetchItems(anyObject(), anyInt())).thenReturn(moreItems);
+        if (!empty) {
+            moreItems = Lists.newArrayList(ItemFactory.createNewItems(1000, 10));
+            when(itemProvider.fetchItems(anyObject(), anyInt())).thenReturn(moreItems);
+        } else {
+            when(itemProvider.fetchItems(anyObject(), anyInt())).thenReturn(Collections.EMPTY_LIST);
+        }
 
         storage = mock(FileSessionStorage.class);
         when(storage.read()).thenReturn(Memento.empty());
-        String sId = String.valueOf(++currentSessionId);
+        String sId = String.valueOf(currentSessionId);
         Timeline<GitItem> t = new Timeline<>(itemProvider, storage);
         WebAutoUpdate autoUpdate = new WebAutoUpdate(sId, t);
-        timeline = spy(new WebTimeline(sId, t, autoUpdate));
-        return timeline;
+        return spy(new WebTimeline(sId, t, autoUpdate));
     }
     @Override
     public Object getState() {
@@ -87,10 +90,11 @@ public class TimelineServiceFsm implements FsmModel {
     }
     @Action
     public void register() {
-        WebTimeline expect = this.stubTimeline();
-        when(timelineFactory.create(any(), any(), any())).thenReturn(expect);
+        currentSessionId++;
+        timeline = this.stubTimeline(false);
 
         String sessionId = String.valueOf(currentSessionId);
+        when(timelineFactory.create(sessionId, URI, PROJECT_NAME)).thenReturn(timeline);
         RegisterResponse response = timelineService.register(sessionId, URI, PROJECT_NAME);
         Assert.assertTrue(response.isSuccess());
         Assert.assertEquals(response.getId(), sessionId);
@@ -101,19 +105,33 @@ public class TimelineServiceFsm implements FsmModel {
         state = State.REGISTERED;
     }
 
+    public boolean registerWithExistSessionIdGuard() {
+        return state == State.REGISTERED;
+    }
+    @Action
+    public void registerWithExistSessionId() {
+        WebTimeline expect = this.stubTimeline(false);
+        when(timelineFactory.create(any(), any(), any())).thenReturn(expect);
+
+        String sessionId = String.valueOf(currentSessionId);
+        RegisterResponse response = timelineService.register(sessionId, URI, PROJECT_NAME);
+        Assert.assertTrue(response.isSuccess());
+        Assert.assertEquals(response.getId(), sessionId);
+        Assert.assertTrue(TimelineService.isValid(sessionId));
+        verify(storage).read();
+        verify(timeline).stopAutoFresh();
+
+        timeline = expect;
+    }
+
     public boolean fetchMoreGuard() {
         return state == State.REGISTERED;
     }
     @Action
     public void fetchMore() {
         Mockito.reset(itemProvider);
-        FetchResponse withUnknownSession = timelineService.fetchMore("???");
-        Assert.assertFalse(withUnknownSession.isSuccess());
-        Assert.assertEquals("The sessionId [???] is not registered!", withUnknownSession.getCause());
-        Assert.assertNull(withUnknownSession.getItems());
-
         FetchResponse response = timelineService.fetchMore(String.valueOf(currentSessionId));
-        Assert.assertEquals(response.getItems().size(), moreItems.size());
+        Assert.assertEquals(moreItems.size(), response.getItems().size());
 
         verify(itemProvider).fetchItems(anyObject(), anyInt());
     }
@@ -130,13 +148,35 @@ public class TimelineServiceFsm implements FsmModel {
         Assert.assertNull(withUnknownSession.getItems());
     }
 
+    public boolean fetchMoreWithEmptyResultGuard() {
+        return state == State.REGISTERED;
+    }
+    @Action
+    public void fetchMoreWithEmptyResult() {
+        currentSessionId++;
+        WebTimeline temp = this.stubTimeline(true);
+        String sessionId = String.valueOf(currentSessionId);
+        when(timelineFactory.create(sessionId, URI, PROJECT_NAME)).thenReturn(temp);
+        timelineService.register(sessionId, URI, PROJECT_NAME);
+
+        Mockito.reset(itemProvider);
+        FetchResponse withUnknownSession = timelineService.fetchMore(String.valueOf(currentSessionId));
+        Assert.assertTrue(withUnknownSession.getItems().isEmpty());
+        Assert.assertTrue(withUnknownSession.isSuccess());
+        Assert.assertNull(withUnknownSession.getCause());
+        verify(itemProvider).fetchItems(anyObject(), anyInt());
+        timelineService.unregister(sessionId);
+        currentSessionId--;
+    }
+
     public boolean fetchNewGuard() {
         return state == State.REGISTERED;
     }
     @Action
     public void fetchNew() {
+        Mockito.reset(itemProvider);
         FetchResponse response = timelineService.fetchNew(String.valueOf(currentSessionId));
-        Assert.assertEquals(response.getItems().size(), moreItems.size());
+        Assert.assertTrue(response.getItems().size() > 0);
 
         verify(itemProvider).fetchNew(anyObject());
     }
@@ -158,7 +198,6 @@ public class TimelineServiceFsm implements FsmModel {
     }
     @Action
     public void unregister() {
-
         boolean result = timelineService.unregister(String.valueOf(currentSessionId));
         Assert.assertTrue(result);
         verify(timeline).stopAutoFresh();

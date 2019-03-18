@@ -115,9 +115,6 @@ public class Timeline<I extends Item> {
 	 * @return the latest commit in the current timeline.
 	 */
 	private I getLatest() {
-		if (items.isEmpty()) {
-			return null;
-		}
 		return items.get(0);
 	}
 
