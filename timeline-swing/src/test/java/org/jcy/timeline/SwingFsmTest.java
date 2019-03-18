@@ -9,7 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-public class SwingFsmTestRunner {
+public class SwingFsmTest {
 
     private static final File RECORD_DIR = new File("E:\\@文件\\大学\\@毕业\\毕业论文\\data");
     private static final String FILE_SUFFIX = ".dot";
