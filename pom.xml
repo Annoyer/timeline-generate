@@ -162,6 +162,10 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.1</version>
                 <configuration>
+                    <includes>
+                        <include>**/*Test.java</include>
+                        <include>**/*Fsm.java</include>
+                    </includes>
                     <skipTests>false</skipTests>
                     <testFailureIgnore>true</testFailureIgnore>
                     <argLine>${surefireArgLine}</argLine>
