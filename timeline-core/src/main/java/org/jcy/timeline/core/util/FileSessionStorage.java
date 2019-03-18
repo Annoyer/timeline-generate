@@ -70,7 +70,7 @@ public class FileSessionStorage<I extends Item> implements SessionStorage<I> {
 		StringBuilder result = new StringBuilder();
 		if (!memento.getItems().isEmpty()) {
 			result.append(serializeItems(memento));
-			result.append(itemSerialization.serialize(memento.getTopItem().get()));
+			result.append(itemSerialization.serialize(memento.getTopItem().orElse(null)));
 		}
 		return result.toString();
 	}

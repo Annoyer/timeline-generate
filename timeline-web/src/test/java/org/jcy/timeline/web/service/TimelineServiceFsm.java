@@ -177,6 +177,6 @@ public class TimelineServiceFsm implements FsmModel {
 
     @Test
     public void runTest() {
-        WebFsmTestRunner.runTest(this, "timeline-controller-fsm.dot");
+        WebFsmTestRunner.runTest(this, "timeline-service-fsm.dot");
     }
 }

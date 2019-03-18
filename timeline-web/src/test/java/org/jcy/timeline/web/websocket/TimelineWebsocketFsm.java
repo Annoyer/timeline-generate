@@ -166,7 +166,7 @@ public class TimelineWebsocketFsm implements FsmModel {
     public void disconnect() throws InterruptedException {
         Assert.assertNotNull(sessionHandler);
         this.sessionHandler.disconnect();
-        Thread.sleep(5*60 * 1000);
+        Thread.sleep(60 * 1000);
         state = State.UNREGISTERED;
     }
 

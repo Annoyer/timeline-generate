@@ -32,7 +32,7 @@ public class SwtUiThreadDispatcherFsm implements FsmModel {
     private State state;
 
     @Rule
-    public final DisplayHelper displayHelper = new DisplayHelper();
+    public DisplayHelper displayHelper = new DisplayHelper();
 
     private BackgroundProcessor backgroundProcessor;
     private SwtUiThreadDispatcher dispatcher;
@@ -47,6 +47,8 @@ public class SwtUiThreadDispatcherFsm implements FsmModel {
     @Override
     public void reset(boolean testing) {
         state = State.START;
+        displayHelper = new DisplayHelper();
+        displayHelper.ensureDisplay();
     }
 
     @Before
@@ -119,13 +121,6 @@ public class SwtUiThreadDispatcherFsm implements FsmModel {
                 .isInstanceOf(IllegalArgumentException.class);
 
         state = State.CREATE_FAILURE;
-    }
-
-    @SuppressWarnings("rawtypes")
-    private static SessionStorage stubSessionStorage() {
-        SessionStorage result = mock(SessionStorage.class);
-        when(result.read()).thenReturn(Memento.empty());
-        return result;
     }
 
     private void executeInUiThread() {

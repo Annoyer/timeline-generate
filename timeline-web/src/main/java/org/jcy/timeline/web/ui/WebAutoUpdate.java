@@ -44,10 +44,14 @@ public class WebAutoUpdate implements AutoUpdate {
 
     @Override
     public void stop() {
-        synchronized (this) {
-            timer.cancel();
-            timer.purge();
-            this.isScheduled = false;
+        if (this.isScheduled) {
+            synchronized (this) {
+                if (this.isScheduled) {
+                    timer.cancel();
+                    timer.purge();
+                    this.isScheduled = false;
+                }
+            }
         }
     }
 

@@ -125,6 +125,7 @@ public class FileSessionStorageFsm implements FsmModel {
         MementoAssert.assertThat(actual)
                 .isEqualTo(expected)
                 .isNotSameAs(expected);
+        state = State.STORED;
     }
     private void storeTests() throws IOException {
         storageOfEmptyMemento();

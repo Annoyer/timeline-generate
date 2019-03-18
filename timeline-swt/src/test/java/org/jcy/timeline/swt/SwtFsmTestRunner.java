@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 public class SwtFsmTestRunner {
 
@@ -46,7 +47,7 @@ public class SwtFsmTestRunner {
             if (!detailFile.exists()) {
                 detailFile.createNewFile();
             }
-            //model.setOutput(new PrintWriter(detailFile));
+            model.setOutput(new PrintWriter(detailFile));
 
             GreedyTester tester = new GreedyTester(model);
             tester.addListener(new StopOnFailureListener());

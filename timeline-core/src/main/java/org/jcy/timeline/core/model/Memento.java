@@ -67,7 +67,7 @@ public class Memento<I extends Item> {
 	 */
 	private static <I>boolean topItemIsElementOfItems(Set<I> items, Optional<I> topItem) {
 		return items.isEmpty() && !topItem.isPresent()
-				|| !items.isEmpty() && items.contains(topItem.get());
+				|| !items.isEmpty() && topItem.isPresent() && items.contains(topItem.get());
 	}
 
 }

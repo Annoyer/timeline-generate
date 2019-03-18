@@ -19,7 +19,7 @@ public class CoreFsmTestRunner {
     private static final File RECORD_DIR = new File("E:\\@文件\\大学\\@毕业\\毕业论文\\data");
     private static final String FILE_SUFFIX = ".dot";
 
-    private static final String DEFAULT_SUB_DIR = "timeline-core-1";
+    private static final String DEFAULT_SUB_DIR = "timeline-core";
 
     public static void runTest(FsmModel fsm, String graphFileName) {
         runTest(fsm, DEFAULT_SUB_DIR, graphFileName);
@@ -47,7 +47,7 @@ public class CoreFsmTestRunner {
             if (!detailFile.exists()) {
                 detailFile.createNewFile();
             }
-            //model.setOutput(new PrintWriter(detailFile));
+            model.setOutput(new PrintWriter(detailFile));
 
             GreedyTester tester = new GreedyTester(model);
             tester.addListener(new StopOnFailureListener());

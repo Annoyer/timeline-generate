@@ -46,7 +46,7 @@ public class WebFsmTestRunner {
             if (!detailFile.exists()) {
                 detailFile.createNewFile();
             }
-            //model.setOutput(new PrintWriter(detailFile));
+            model.setOutput(new PrintWriter(detailFile));
 
             GreedyTester tester = new GreedyTester(model);
             tester.addListener(new StopOnFailureListener());

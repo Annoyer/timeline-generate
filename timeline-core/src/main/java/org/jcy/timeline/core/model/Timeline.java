@@ -151,7 +151,7 @@ public class Timeline<I extends Item> {
 		Memento<I> memento = sessionStorage.read();
 		if (!memento.getItems().isEmpty()) {
 			addSorted(new ArrayList<>(memento.getItems()));
-			setTopItem(memento.getTopItem().get());
+			setTopItem(memento.getTopItem().orElse(null));
 		}
 	}
 

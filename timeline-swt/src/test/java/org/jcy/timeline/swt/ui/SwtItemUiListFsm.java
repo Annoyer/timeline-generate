@@ -74,6 +74,6 @@ public class SwtItemUiListFsm implements FsmModel {
 
     @Test
     public void runTests() {
-        SwtFsmTestRunner.runTest(this, "git-item-ui-factory-fsm.dot");
+        SwtFsmTestRunner.runTest(this, "swt-item-ui-list-fsm.dot");
     }
 }

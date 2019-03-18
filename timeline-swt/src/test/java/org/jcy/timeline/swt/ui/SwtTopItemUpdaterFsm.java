@@ -15,6 +15,7 @@ import org.jcy.timeline.test.util.swt.DisplayHelper;
 import org.jcy.timeline.test.util.swt.SwtEventHelper;
 import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import static org.jcy.timeline.swt.BackgroundThreadHelper.directUiThreadDispatcher;
 import static org.jcy.timeline.swt.ui.ShellHelper.showShell;
@@ -75,21 +76,21 @@ public class SwtTopItemUpdaterFsm implements FsmModel {
     public boolean updateIfBelowTopGuard() { return state == State.REGISTERED; }
     @Action
     public void updateIfBelowTop() throws Exception {
+        this.clean();
         Item item = equipItemListWithItem();
         getItemUiControl(item).setLocation(0, fromTopOffset(1));
-
         updater.update();
 
-        verify(timeline).setTopItem(item);
+        verify(timeline, atLeastOnce()).setTopItem(item);
     }
 
 
     public boolean updateIfBelowTopWithEqualTopItemGuard() { return state == State.REGISTERED; }
     @Action
     public void updateIfBelowTopWithEqualTopItem() throws Exception {
+        this.clean();
         Item item = equipItemListWithItem();
         getItemUiControl(item).setLocation(0, fromTopOffset(1));
-
         updater.update();
 
         verify(timeline).setTopItem(item);
@@ -98,11 +99,11 @@ public class SwtTopItemUpdaterFsm implements FsmModel {
     public boolean updateIfBelowTopWithDifferentTopItemGuard() { return state == State.REGISTERED; }
     @Action
     public void updateIfBelowTopWithDifferentTopItem() throws Exception {
+        this.clean();
         Item item = equipItemListWithItem();
         equipWithTopItem(timeline, new Item(30L, "other") {
         });
         getItemUiControl(item).setLocation(0, fromTopOffset(1));
-
         updater.update();
 
         verify(timeline).setTopItem(item);
@@ -111,9 +112,9 @@ public class SwtTopItemUpdaterFsm implements FsmModel {
     public boolean updateIfAboveTopGuard() { return state == State.REGISTERED; }
     @Action
     public void updateIfAboveTop() {
+        this.clean();
         Item item = equipItemListWithItem();
         getItemUiControl(item).setLocation(0, fromTopOffset(-1));
-
         updater.update();
 
         verify(timeline, never()).setTopItem(item);
@@ -122,9 +123,9 @@ public class SwtTopItemUpdaterFsm implements FsmModel {
     public boolean updateWithoutItemsGuard() { return state == State.REGISTERED; }
     @Action
     public void updateWithoutItems() {
+        this.clean();
         equipWithItems(timeline, new Item( 20L, "id") {
         });
-
         updater.update();
 
         verify(timeline, never()).setTopItem(any(Item.class));
@@ -134,6 +135,7 @@ public class SwtTopItemUpdaterFsm implements FsmModel {
     public boolean updateWithoutItemUiGuard() { return state == State.REGISTERED; }
     @Action
     public void updateWithoutItemUi() {
+        this.clean();
         updater.update();
 
         verify(timeline, never()).setTopItem(any(Item.class));
@@ -142,12 +144,12 @@ public class SwtTopItemUpdaterFsm implements FsmModel {
     public boolean updateIfItemUiControlIsNotShowingGuard() { return state == State.REGISTERED; }
     @Action
     public void updateIfItemUiControlIsNotShowing() {
+        this.clean();
         Item item = equipWithItems(timeline, new Item(20L, "id") {
         });
         SwtItemUi<Item> itemUi = stubItemUi(displayHelper.createShell());
         map(itemUiMap, item, itemUi);
         getItemUiControl(item).setLocation(0, fromTopOffset(1));
-
         updater.update();
 
         verify(timeline, never()).setTopItem(item);
@@ -174,6 +176,14 @@ public class SwtTopItemUpdaterFsm implements FsmModel {
 
     private static int fromTopOffset(int i) {
         return i - SwtTopItemUpdater.TOP_OFF_SET;
+    }
+
+    private void clean() {
+        shell = displayHelper.createShell();
+        timeline = stubTimeline();
+        itemUiMap = stubUiItemMap();
+        itemUiList = stubUiItemList(shell);
+        updater = spy(new SwtTopItemUpdater<>(timeline, itemUiMap, itemUiList, directUiThreadDispatcher()));
     }
 
     @Test

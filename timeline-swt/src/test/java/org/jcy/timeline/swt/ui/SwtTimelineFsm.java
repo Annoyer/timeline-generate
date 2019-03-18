@@ -13,6 +13,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InOrder;
+import org.mockito.Mockito;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.jcy.timeline.swt.ui.SwtTimelineCompoundHelper.*;
@@ -109,7 +110,7 @@ public class SwtTimelineFsm implements FsmModel {
 
         timeline.setTitle(expected);
 
-        verify(header).setTitle(expected);
+        verify(header, atLeastOnce()).setTitle(expected);
     }
 
     @Test
