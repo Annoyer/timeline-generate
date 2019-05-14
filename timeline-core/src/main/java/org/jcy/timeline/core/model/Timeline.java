@@ -12,8 +12,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class Timeline<I extends Item> {
 
-	public static final int FETCH_COUNT_LOWER_BOUND = 1;
-	public static final int FETCH_COUNT_UPPER_BOUND = 20;
 	public static final int DEFAULT_FETCH_COUNT = 10;
 
 	/**
@@ -115,6 +113,9 @@ public class Timeline<I extends Item> {
 	 * @return the latest commit in the current timeline.
 	 */
 	private I getLatest() {
+		if (items.isEmpty()) {
+			return null;
+		}
 		return items.get(0);
 	}
 

@@ -2,6 +2,9 @@ package org.jcy.timeline.core.model;
 
 import org.jcy.timeline.util.Assertion;
 
+/**
+ * Timeline Item.
+ */
 public abstract class Item implements Comparable<Item> {
 
 	protected final long timeStamp;

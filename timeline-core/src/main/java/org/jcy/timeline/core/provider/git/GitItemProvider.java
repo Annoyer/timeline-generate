@@ -166,7 +166,7 @@ public class GitItemProvider implements ItemProvider<GitItem> {
 	 * @param predecessor the latest item.
 	 */
 	public List<GitItem> fetchNew(GitItem predecessor) {
-		Assertion.check(predecessor != null, "LATEST_ITEM_MUST_NOT_BE_NULL");
+		//Assertion.check(predecessor != null, "LATEST_ITEM_MUST_NOT_BE_NULL");
 
 		// 拉取应用启动后的更新记录，最多100条。
 		// computeNewCount计算出latestItem在commits中的位置，如果存在，只返回latestItem之后提交的commit记录。

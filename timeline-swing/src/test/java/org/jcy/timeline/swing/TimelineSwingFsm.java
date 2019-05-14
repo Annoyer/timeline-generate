@@ -75,30 +75,6 @@ public class TimelineSwingFsm implements TimedFsmModel {
         return updateTime > 0;
     }
 
-    public boolean endUpdateGuard() {
-        return state.is(RUNNING) && !isUpdateIntervalEnabled() && isUpdateTimeEnabled();
-    }
-    @Action
-    public void endUpdate() {
-        while (state.isRealUpdating()) {}
-        updateInterval = UPDATE_INTERVAL;
-        state.setUpdating();
-        currentTime = 0;
-        TIME_PASSED.start();
-    }
-
-    public boolean afterFiveSecondsGuard() {
-        return state.is(RUNNING) && isUpdateIntervalEnabled() && !isUpdateTimeEnabled();
-    }
-    @Action
-    public void afterFiveSeconds() {
-        while (!state.isRealUpdating()) {}
-        state.setUpdating();
-        updateTime = UPDATE_TIME;
-        currentTime = 0;
-        TIME_PASSED.start();
-    }
-
     private TimelineSwingFsm() {
     }
 
@@ -138,6 +114,29 @@ public class TimelineSwingFsm implements TimedFsmModel {
         TIME_PASSED.start();
     }
 
+    public boolean endUpdateGuard() {
+        return state.is(RUNNING) && !isUpdateIntervalEnabled() && isUpdateTimeEnabled();
+    }
+    @Action
+    public void endUpdate() {
+        while (state.isRealUpdating()) {}
+        updateInterval = UPDATE_INTERVAL;
+        state.setUpdating();
+        currentTime = 0;
+        TIME_PASSED.start();
+    }
+
+    public boolean afterFiveSecondsGuard() {
+        return state.is(RUNNING) && isUpdateIntervalEnabled() && !isUpdateTimeEnabled();
+    }
+    @Action
+    public void afterFiveSeconds() {
+        while (!state.isRealUpdating()) {}
+        state.setUpdating();
+        updateTime = UPDATE_TIME;
+        currentTime = 0;
+        TIME_PASSED.start();
+    }
 
     public boolean createTimelineGuard() {
         return state.is(START);
